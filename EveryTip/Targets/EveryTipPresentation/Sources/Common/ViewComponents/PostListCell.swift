@@ -40,7 +40,7 @@ final class PostListCell: UITableViewCell, Reusable {
             style: .bold,
             size: 16
         )
-        
+        label.sizeToFit()
         return label
     }()
     
@@ -52,6 +52,7 @@ final class PostListCell: UITableViewCell, Reusable {
         )
         label.numberOfLines = 2
         label.textColor = .et_textColorBlack50
+        label.sizeToFit()
         
         return label
     }()
@@ -145,13 +146,6 @@ final class PostListCell: UITableViewCell, Reusable {
         return stackView
     }()
     
-    // 레이아웃 편의를 위한 우측 공백 뷰
-    private let rightSpacer: UIView = {
-        let view = UIView()
-        
-        return view
-    }()
-    
     let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.backgroundColor = .gray
@@ -186,29 +180,26 @@ final class PostListCell: UITableViewCell, Reusable {
         viewCountStackView.addArrangedSubview(viewCountImageView)
         viewCountStackView.addArrangedSubview(viewCountLabel)
         
-        contentView.addSubview(rightSpacer)
         contentView.addSubview(thumbnailImageView)
         
         contentView.addSubview(mainTextLabel)
     }
     
     private func setupConstraints() {
-        categoryLabel.snp.makeConstraints {
-            $0.top.equalTo(titleLabel.snp.top)
-            $0.leading.equalTo(titleLabel.snp.leading)
+        titleLabel.snp.makeConstraints {
+            $0.top.equalTo(contentView).offset(15)
+            $0.leading.equalTo(contentView)
+            $0.trailing.equalTo(contentView).offset(-120)
         }
         
-        titleLabel.snp.makeConstraints {
-            $0.top.equalTo(contentView.snp.top).offset(10)
-            $0.leading.equalTo(contentView.snp.leading)
-            $0.trailing.equalTo(rightSpacer.snp.leading).offset(-10)
+        categoryLabel.snp.makeConstraints {
+            $0.top.leading.equalTo(titleLabel)
         }
         
         mainTextLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
-            $0.leading.equalTo(contentView.snp.leading)
-            $0.trailing.equalTo(rightSpacer.snp.leading).offset(-10)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-30)
+            $0.leading.equalTo(contentView)
+            $0.trailing.equalTo(contentView).offset(-120)
         }
         
         userImageView.snp.makeConstraints {
@@ -224,39 +215,33 @@ final class PostListCell: UITableViewCell, Reusable {
         }
         
         userStackView.snp.makeConstraints {
-            $0.top.equalTo(mainTextLabel.snp.bottom).offset(5)
+            $0.top.greaterThanOrEqualTo(mainTextLabel.snp.bottom).offset(10)
             $0.leading.equalTo(contentView.snp.leading)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-5)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.3)
+        }
+        
+        viewCountStackView.snp.makeConstraints {
+            $0.top.greaterThanOrEqualTo(mainTextLabel.snp.bottom).offset(10)
+            $0.leading.equalTo(userStackView.snp.trailing).offset(3)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
             $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.2)
         }
         
         likeCountStackView.snp.makeConstraints {
-            $0.top.equalTo(mainTextLabel.snp.bottom).offset(5)
-            $0.leading.equalTo(userStackView.snp.trailing).offset(3)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-5)
-            $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.2)
-        }
-        
-        viewCountStackView.snp.makeConstraints {
-            $0.top.equalTo(mainTextLabel.snp.bottom).offset(5)
-            $0.leading.equalTo(likeCountStackView.snp.trailing).offset(3)
-            $0.bottom.equalTo(contentView.snp.bottom).offset(-5)
+            $0.top.greaterThanOrEqualTo(mainTextLabel.snp.bottom).offset(10)
+            
+            $0.leading.equalTo(viewCountStackView.snp.trailing).offset(3)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
             $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.2)
         }
         
         thumbnailImageView.snp.makeConstraints {
-            $0.top.equalTo(contentView.snp.top).offset(10)
-            $0.trailing.equalTo(contentView.snp.trailing).offset(-10)
+            $0.top.equalTo(contentView.snp.top).offset(20)
+            $0.trailing.equalTo(contentView.snp.trailing)
             $0.width.equalTo(contentView.snp.width).multipliedBy(0.26)
             $0.height.equalTo(thumbnailImageView.snp.width)
-            $0.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-10)
-        }
-        
-        rightSpacer.snp.makeConstraints {
-            $0.top.equalTo(contentView.snp.top)
-            $0.bottom.equalTo(contentView.snp.bottom)
-            $0.trailing.equalTo(contentView.snp.trailing)
-            $0.width.equalTo(contentView.snp.width).multipliedBy(0.3)
+            $0.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-15)
         }
     }
 }
