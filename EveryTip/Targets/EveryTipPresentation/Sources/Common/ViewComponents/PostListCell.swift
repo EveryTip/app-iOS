@@ -16,13 +16,12 @@ final class PostListCell: UITableViewCell, Reusable {
     
     let categoryLabel: UILabel = {
         let label = UILabel()
-
+        
         label.font = UIFont.et_pretendard(
             style: .bold,
             size: 14
         )
-
-        label.sizeToFit()
+        
         label.layer.cornerRadius = 4
         label.clipsToBounds = true
         
@@ -40,7 +39,7 @@ final class PostListCell: UITableViewCell, Reusable {
             style: .bold,
             size: 16
         )
-        label.sizeToFit()
+        
         return label
     }()
     
@@ -52,7 +51,6 @@ final class PostListCell: UITableViewCell, Reusable {
         )
         label.numberOfLines = 2
         label.textColor = .et_textColorBlack50
-        label.sizeToFit()
         
         return label
     }()
@@ -72,7 +70,6 @@ final class PostListCell: UITableViewCell, Reusable {
             style: .medium,
             size: 12
         )
-        label.sizeToFit()
         
         return label
     }()
@@ -101,7 +98,6 @@ final class PostListCell: UITableViewCell, Reusable {
             style: .medium,
             size: 12
         )
-        label.sizeToFit()
         
         return label
     }()
@@ -111,7 +107,6 @@ final class PostListCell: UITableViewCell, Reusable {
         stackView.axis = .horizontal
         stackView.spacing = 3
         stackView.distribution = .fill
-        stackView.sizeToFit()
         
         return stackView
     }()
@@ -131,7 +126,6 @@ final class PostListCell: UITableViewCell, Reusable {
             style: .medium,
             size: 12
         )
-        label.sizeToFit()
         
         return label
     }()
@@ -141,7 +135,6 @@ final class PostListCell: UITableViewCell, Reusable {
         stackView.axis = .horizontal
         stackView.spacing = 3
         stackView.distribution = .fill
-        stackView.sizeToFit()
         
         return stackView
     }()
@@ -167,7 +160,7 @@ final class PostListCell: UITableViewCell, Reusable {
     private func setupLayout() {
         titleLabel.addSubview(categoryLabel)
         contentView.addSubview(titleLabel)
-
+        
         contentView.addSubview(userStackView)
         userStackView.addArrangedSubview(userImageView)
         userStackView.addArrangedSubview(userNameLabel)
@@ -175,7 +168,7 @@ final class PostListCell: UITableViewCell, Reusable {
         contentView.addSubview(likeCountStackView)
         likeCountStackView.addArrangedSubview(likeCountImageView)
         likeCountStackView.addArrangedSubview(likeCountLabel)
-
+        
         contentView.addSubview(viewCountStackView)
         viewCountStackView.addArrangedSubview(viewCountImageView)
         viewCountStackView.addArrangedSubview(viewCountLabel)
@@ -189,7 +182,7 @@ final class PostListCell: UITableViewCell, Reusable {
         titleLabel.snp.makeConstraints {
             $0.top.equalTo(contentView).offset(15)
             $0.leading.equalTo(contentView)
-            $0.trailing.equalTo(contentView).offset(-120)
+            $0.trailing.equalTo(thumbnailImageView.snp.leading).offset(-15)
         }
         
         categoryLabel.snp.makeConstraints {
