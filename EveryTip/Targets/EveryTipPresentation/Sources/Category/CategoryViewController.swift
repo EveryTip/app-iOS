@@ -56,7 +56,7 @@ final class CategoryViewController: BaseViewController {
     
     private let bannerImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .gray
+        imageView.image = UIImage.et_updateImage(for: .categoryViewBanner)
         
         return imageView
     }()
@@ -120,12 +120,12 @@ final class CategoryViewController: BaseViewController {
             $0.width.equalTo(view.snp.width).multipliedBy(0.22)
             $0.height.equalTo(bannerImageView.snp.width)
             
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-25)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(5)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-30)
         }
         
         tableViewBackGroundView.snp.makeConstraints {
-            $0.top.equalTo(bannerDescriptionLabel.snp.bottom).offset(15)
+            $0.top.equalTo(bannerDescriptionLabel.snp.bottom).offset(20)
             $0.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         

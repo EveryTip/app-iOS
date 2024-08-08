@@ -56,8 +56,8 @@ final class HomeViewController: BaseViewController {
     
     private let weeklyTipImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "person.crop.rectangle")
-        imageView.tintColor = UIColor(red: 0.00, green: 0.58, blue: 0.27, alpha: 1.00)
+        imageView.image = UIImage.et_updateImage(for: .homeViewEmoji)
+//        imageView.backgroundColor = .brown
         
         return imageView
     }()
@@ -223,14 +223,14 @@ final class HomeViewController: BaseViewController {
         }
         
         weeklyTipImageView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(5)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-10)
-            $0.width.equalTo(view.snp.width).multipliedBy(0.3)
-            $0.height.equalTo(weeklyTipImageView.snp.width)
+            $0.top.equalTo(view.safeAreaLayoutGuide)
+            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-30)
+            $0.width.equalTo(view.snp.width).multipliedBy(0.29)
+            $0.height.equalTo(weeklyTipImageView.snp.width).multipliedBy(0.955)
         }
         
         searchView.snp.makeConstraints {
-            $0.top.equalTo(weeklyTipImageView.snp.bottom)
+            $0.top.equalTo(weeklyTipImageView.snp.bottom).offset(20)
             $0.leading.equalTo(view.safeAreaLayoutGuide)
             $0.trailing.equalTo(view.safeAreaLayoutGuide)
             $0.height.equalTo(searchBar.snp.height).offset(50)
