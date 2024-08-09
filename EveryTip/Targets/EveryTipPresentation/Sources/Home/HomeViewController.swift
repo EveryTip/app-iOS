@@ -56,8 +56,7 @@ final class HomeViewController: BaseViewController {
     
     private let weeklyTipImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage.et_updateImage(for: .homeViewEmoji)
-//        imageView.backgroundColor = .brown
+        imageView.image = UIImage.et_getImage(for: .homeViewEmoji)
         
         return imageView
     }()

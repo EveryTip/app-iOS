@@ -56,7 +56,7 @@ final class CategoryViewController: BaseViewController {
     
     private let bannerImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage.et_updateImage(for: .categoryViewBanner)
+        imageView.image = UIImage.et_getImage(for: .categoryViewBanner)
         
         return imageView
     }()

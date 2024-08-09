@@ -8,13 +8,13 @@
 
 import UIKit
 
-public enum ImageType {
+public enum ImageAssetType {
     case homeViewEmoji
     case categoryViewBanner
 }
 
 extension UIImage {
-    public static func et_updateImage(for imageAsset: ImageType) -> UIImage {
+    public static func et_getImage(for imageAsset: ImageAssetType) -> UIImage {
         
         switch imageAsset {
         case .homeViewEmoji:  EveryTipDesignSystemAsset.homeViewEmoji.image
@@ -22,6 +22,5 @@ extension UIImage {
         case.categoryViewBanner:
             EveryTipDesignSystemAsset.categoryViewBanner.image
         }
-         
     }
 }
