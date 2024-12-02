@@ -31,10 +31,9 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
     //MARK: Internal Methods
     
     func start() {
-        // TODO: 각 ViewController, Coordinator 정의 및 start 메서드 실행
+        // 중앙 버튼 위치를 맞추기 위한 공백 뷰컨
         let emptyVC = UIViewController()
         emptyVC.tabBarItem.isEnabled = false
-        let thirdVC = UINavigationController()
         
         let homeCoordinator = DefaultHomeViewCoordinator(navigationController: navigationController)
         homeCoordinator.parentCoordinator = self
@@ -44,6 +43,10 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
         categoryCoordinator.parentCoordinator = self
         append(child: categoryCoordinator)
         
+        let exploreCoordinator = DefaultExploreCoordinator(navigationController: navigationController)
+        exploreCoordinator.parentCoordinator = self
+        append(child: exploreCoordinator)
+        
         let userInfoCoodinator = DefaultUserInfoViewCoordinator(navigationController: navigationController)
         userInfoCoodinator.parentCoordinator = self
         append(child: userInfoCoodinator)
@@ -52,7 +55,7 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
             homeCoordinator.start(),
             categoryCoordinator.start(),
             emptyVC,
-            thirdVC,
+            exploreCoordinator.start(),
             userInfoCoodinator.start()
         ]
         
