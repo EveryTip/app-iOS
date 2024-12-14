@@ -11,8 +11,11 @@ import UIKit
 import EveryTipDesignSystem
 
 import SnapKit
+import ReactorKit
 
-final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
+final class StoryCollectionViewCell: UICollectionViewCell, Reusable ,View {
+    
+    var disposeBag: RxSwift.DisposeBag = DisposeBag()
     
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -22,13 +25,17 @@ final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
         return imageView
     }()
     
-    let highlightOverlayView: UIView = {
+    // TODO: 알파 값 추후 세밀하게 설정
+    
+    let selectedOverlayView: UIView = {
         let view = UIView()
         view.layer.borderWidth = 2
         view.layer.borderColor = UIColor.et_brandColor2.cgColor
-        view.backgroundColor = UIColor.et_brandColor2
+        view.backgroundColor = UIColor.et_brandColor2.withAlphaComponent(0.2)
         view.layer.cornerRadius = 30
-        
+    
+        view.isHidden = true
+    
         return view
     }()
     
@@ -56,9 +63,9 @@ final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
     
     private func setuplayout() {
         self.backgroundColor = .white
-        profileImageView.addSubview(highlightOverlayView)
         contentView.addSubViews(
             profileImageView,
+            selectedOverlayView,
             userNameLabel
         )
     }
@@ -70,10 +77,31 @@ final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
             $0.width.height.equalTo(60)
         }
         
+        selectedOverlayView.snp.makeConstraints {
+            $0.top.equalTo(contentView.snp.top).offset(10)
+            $0.centerX.equalTo(contentView.snp.centerX)
+            $0.width.height.equalTo(60)
+        }
+        
         userNameLabel.snp.makeConstraints {
             $0.top.equalTo(profileImageView.snp.bottom).offset(5)
             $0.leading.trailing.equalTo(contentView).inset(5)
             $0.bottom.equalTo(contentView.snp.bottom)
         }
+    }
+    
+    func setSelected(_ isSelected: Bool)  {
+        selectedOverlayView.isHidden = !isSelected
+    }
+    
+    func bind(reactor: StoryCellReactor) {
+        reactor.state.map { $0.isSelected }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .bind { [weak self] isSelected in
+                guard let self = self else { return }
+                self.selectedOverlayView.isHidden = !isHidden
+            }
+            .disposed(by: disposeBag)
     }
 }

@@ -219,4 +219,16 @@ extension ExploreViewController: UICollectionViewDelegate, UICollectionViewDataS
         
         return cell
     }
+    
+    // TODO: Cell reuse로 인한 오류 존재, 동작 개선할것
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? StoryCollectionViewCell else { return }
+        cell.setSelected(true)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        guard let cell = collectionView.cellForItem(at: indexPath) as? StoryCollectionViewCell else { return }
+        cell.setSelected(false)
+    }
 }
