@@ -8,6 +8,8 @@
 
 import UIKit
 
+import ReactorKit
+
 protocol ExploreCoordinator: Coordinator {
     func start() -> UIViewController
 }
@@ -24,13 +26,15 @@ final class DefaultExploreCoordinator: ExploreCoordinator {
         self.navigationController = navigationController
     }
         
+    private let reactor = ExploreReactor()
+    
     func start() {
-        let exploreViewController = ExploreViewController()
+        let exploreViewController = ExploreViewController(reactor: reactor)
         exploreViewController.coordinator = self
     }
     
     func start() -> UIViewController {
-        let exploreViewController = ExploreViewController()
+        let exploreViewController = ExploreViewController(reactor: reactor)
         exploreViewController.coordinator = self
         
         return exploreViewController
