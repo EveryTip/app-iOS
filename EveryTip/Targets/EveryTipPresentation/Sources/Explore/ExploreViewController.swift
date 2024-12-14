@@ -30,6 +30,8 @@ final class ExploreViewController: BaseViewController, View {
         return view
     }()
     
+    // TODO: 타이틀 변경 동적이게 변경
+    
     private let exploreTitleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.et_pretendard(
