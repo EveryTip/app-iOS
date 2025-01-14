@@ -11,10 +11,12 @@ import UIKit
 import Swinject
 
 import EveryTipDomain
-
-protocol UserInfoViewCoordinator: Coordinator {
+import EveryTipCore
+import RxSwift
+protocol UserInfoViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
     func pushToAgreementViewcontroller()
+    func pushToUserContentsView()
 }
 
 final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
@@ -25,7 +27,7 @@ final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
     var navigationController: UINavigationController
     
     private let container = Container.shared
-
+    
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
@@ -51,5 +53,12 @@ final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
         let agreementCoordinator = DefaultAgreementCoordinator(navigationController: navigationController)
         self.childCoordinators.append(agreementCoordinator)
         agreementCoordinator.start()
+    }
+    
+    func pushToUserContentsView() {
+        let userContentsCoordinator = DefaultUserContentsCoordinator(navigationController: navigationController)
+            userContentsCoordinator.parentCoordinator = self
+            self.append(child: userContentsCoordinator)
+            userContentsCoordinator.start()
     }
 }

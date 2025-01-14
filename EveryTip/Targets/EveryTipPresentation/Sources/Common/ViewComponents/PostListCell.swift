@@ -2,43 +2,29 @@
 //  PostListCell.swift
 //  EveryTipPresentation
 //
-//  Created by 김경록 on 6/10/24.
-//  Copyright © 2024 EveryTip. All rights reserved.
+//  Created by 김경록 on 1/3/25.
+//  Copyright © 2025 EveryTip. All rights reserved.
 //
 
 import UIKit
+import SnapKit
 
 import EveryTipDesignSystem
 
-import SnapKit
-
 final class PostListCell: UITableViewCell, Reusable {
     
-    let categoryLabel: UILabel = {
+    private let categoryLabel: UILabel = {
         let label = UILabel()
-        
-        label.font = UIFont.et_pretendard(
-            style: .bold,
-            size: 14
-        )
-        
         label.layer.cornerRadius = 4
-        label.clipsToBounds = true
-        
-        // TODO: 각 카테고리 라벨별 색깔 지정 처리
-        label.backgroundColor = UIColor(red: 0.98, green: 0.88, blue: 0.89, alpha: 1.00)
-        label.textColor = UIColor(red: 0.91, green: 0.30, blue: 0.40, alpha: 1.00)
+        label.layer.masksToBounds = true
         
         return label
     }()
     
-    let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 2
-        label.font = UIFont.et_pretendard(
-            style: .bold,
-            size: 16
-        )
+        label.font = UIFont.et_pretendard(style: .bold, size: 16)
         
         return label
     }()
@@ -50,106 +36,83 @@ final class PostListCell: UITableViewCell, Reusable {
             size: 14
         )
         label.numberOfLines = 2
-        label.textColor = .et_textColorBlack50
+        label.textColor = UIColor.et_textColorBlack50
         
         return label
     }()
     
-    // TODO: 현재 기본 이미지, 추후 네트워킹으로 받으면 레이아웃 수정 필요할듯
-    let userImageView: UIImageView = {
+    let thumnailImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "person.circle.fill")
-        imageView.tintColor = .gray
-        imageView.contentMode = .scaleAspectFit
+        imageView.image = UIImage.et_getImage(for: .blankImage)
+        
         return imageView
     }()
     
     let userNameLabel: UILabel = {
         let label = UILabel()
+        label.textAlignment = .right
         label.font = UIFont.et_pretendard(
             style: .medium,
             size: 12
         )
+        label.textColor = UIColor(hex: "#777777")
         
         return label
     }()
     
-    private lazy var userStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 3
-        stackView.distribution = .fill
-        stackView.sizeToFit()
+    private let viewsImage: UIImageView = {
+        let imageview = UIImageView()
+        imageview.image = UIImage.et_getImage(for: .viewsImage)
         
-        return stackView
+        return imageview
     }()
     
-    let viewCountImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "eye")
-        imageView.tintColor = .gray
-        
-        return imageView
-    }()
-    
-    let viewCountLabel: UILabel = {
+    let viewsCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.et_pretendard(
-            style: .medium,
-            size: 12
-        )
+        label.text = "0"
+        label.font = UIFont.et_pretendard(style: .medium, size: 12)
+        label.textColor = UIColor(hex: "#777777")
         
         return label
     }()
     
-    private lazy var viewCountStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 3
-        stackView.distribution = .fill
+    private let commentsImage: UIImageView = {
+        let imageview = UIImageView()
+        imageview.image = UIImage.et_getImage(for: .commentImage)
         
-        return stackView
+        return imageview
     }()
     
-    // TODO: 내가 좋아요 표시 한 경우 빨간색으로 표시
-    let likeCountImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "heart")
-        imageView.tintColor = .gray
-        
-        return imageView
-    }()
-    
-    let likeCountLabel: UILabel = {
+    let commentsCountLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.et_pretendard(
-            style: .medium,
-            size: 12
-        )
+        label.font = UIFont.et_pretendard(style: .medium, size: 12)
+        label.text = "0"
+        label.textColor = UIColor(hex: "#777777")
         
         return label
     }()
     
-    private lazy var likeCountStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 3
-        stackView.distribution = .fill
+    let likesImage: UIImageView = {
+        let imageview = UIImageView()
+        imageview.image = UIImage.et_getImage(for: .likeImage_empty)
+        imageview.tintColor = UIColor(hex: "#777777")
         
-        return stackView
+        return imageview
     }()
     
-    let thumbnailImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage.et_getImage(for: .blankImage)
-        imageView.contentMode = .scaleAspectFit
-        imageView.layer.cornerRadius = 10
+    let likesCountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "0"
+        label.font = UIFont.et_pretendard(style: .medium, size: 12)
+        label.textColor = UIColor(hex: "#777777")
         
-        return imageView
+        return label
     }()
     
+    // MARK: init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .white
         setupLayout()
         setupConstraints()
     }
@@ -158,84 +121,117 @@ final class PostListCell: UITableViewCell, Reusable {
         fatalError("init(coder:) has not been implemented")
     }
     
+    // MARK: Internal Methods
+    
+    func configureTitleLabelText(_ text: String) {
+        let categoryWidth = calculateLabelWidth(for: categoryLabel)
+        let space = createDynamicSpace(forWidth: categoryWidth, withFont: titleLabel.font)
+        let titleText = text
+        titleLabel.text = space + titleText
+    }
+    
+    func configureCategoryLabel(id: Int) {
+        categoryLabel.setCategory(with: id)
+    }
+    
+    // MARK: Private Methods
+    
+    private func calculateLabelWidth(for label: UILabel) -> CGFloat {
+        guard let text = label.text else { return 0 }
+        let font = label.font ?? UIFont.et_pretendard(style: .bold, size: 12)
+        let size = (text as NSString).size(withAttributes: [.font: font])
+        return size.width + 5 // 텍스트 패딩 포함
+    }
+    
+    private func createDynamicSpace(forWidth width: CGFloat, withFont font: UIFont) -> String {
+        let spaceCharWidth = " ".size(withAttributes: [.font: font]).width // 공백 문자 하나의 넓이
+        let spaceCount = Int(ceil(width / spaceCharWidth)) // 필요한 공백 문자 수 계산
+        return String(repeating: " ", count: spaceCount)
+    }
+    
+    // MARK: Layout Methods
+    
     private func setupLayout() {
-        titleLabel.addSubview(categoryLabel)
-        contentView.addSubview(titleLabel)
-        
-        contentView.addSubview(userStackView)
-        userStackView.addArrangedSubview(userImageView)
-        userStackView.addArrangedSubview(userNameLabel)
-        
-        contentView.addSubview(likeCountStackView)
-        likeCountStackView.addArrangedSubview(likeCountImageView)
-        likeCountStackView.addArrangedSubview(likeCountLabel)
-        
-        contentView.addSubview(viewCountStackView)
-        viewCountStackView.addArrangedSubview(viewCountImageView)
-        viewCountStackView.addArrangedSubview(viewCountLabel)
-        
-        contentView.addSubview(thumbnailImageView)
-        
-        contentView.addSubview(mainTextLabel)
+        contentView.addSubViews(
+            categoryLabel,
+            titleLabel,
+            mainTextLabel,
+            viewsImage,
+            viewsCountLabel,
+            commentsImage,
+            commentsCountLabel,
+            likesImage,
+            likesCountLabel,
+            thumnailImageView,
+            userNameLabel
+        )
     }
     
     private func setupConstraints() {
-        titleLabel.snp.makeConstraints {
-            $0.top.equalTo(contentView).offset(15)
-            $0.leading.equalTo(contentView)
-            $0.trailing.equalTo(thumbnailImageView.snp.leading).offset(-15)
+        categoryLabel.snp.makeConstraints {
+            $0.top.equalTo(contentView.snp.top).offset(10)
+            $0.leading.equalTo(contentView.snp.leading)
+            $0.height.equalTo(18)
         }
         
-        categoryLabel.snp.makeConstraints {
-            $0.top.leading.equalTo(titleLabel)
+        titleLabel.snp.makeConstraints {
+            $0.top.equalTo(contentView.snp.top).offset(10)
+            $0.leading.equalTo(contentView.snp.leading)
+            $0.trailing.equalTo(thumnailImageView.snp.leading).offset(-20)
         }
         
         mainTextLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(10)
-            $0.leading.equalTo(contentView)
-            $0.trailing.equalTo(contentView).offset(-120)
+            $0.leading.equalTo(contentView.snp.leading)
+            $0.trailing.equalTo(thumnailImageView.snp.leading).offset(-10)
+            $0.height.equalTo(40)
         }
         
-        userImageView.snp.makeConstraints {
-            $0.width.equalTo(20)
-        }
-        
-        likeCountImageView.snp.makeConstraints {
-            $0.width.equalTo(20)
-        }
-        
-        viewCountImageView.snp.makeConstraints {
-            $0.width.equalTo(20)
-        }
-        
-        userStackView.snp.makeConstraints {
-            $0.top.greaterThanOrEqualTo(mainTextLabel.snp.bottom).offset(10)
+        viewsImage.snp.makeConstraints {
             $0.leading.equalTo(contentView.snp.leading)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
-            $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.3)
+            $0.width.height.equalTo(14)
         }
         
-        viewCountStackView.snp.makeConstraints {
-            $0.top.greaterThanOrEqualTo(mainTextLabel.snp.bottom).offset(10)
-            $0.leading.equalTo(userStackView.snp.trailing).offset(3)
+        viewsCountLabel.snp.makeConstraints {
+            $0.leading.equalTo(viewsImage.snp.trailing).offset(4)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
-            $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.2)
         }
         
-        likeCountStackView.snp.makeConstraints {
-            $0.top.greaterThanOrEqualTo(mainTextLabel.snp.bottom).offset(10)
-            
-            $0.leading.equalTo(viewCountStackView.snp.trailing).offset(3)
+        commentsImage.snp.makeConstraints {
+            $0.leading.equalTo(viewsCountLabel.snp.trailing).offset(8)
             $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
-            $0.width.lessThanOrEqualTo(contentView.snp.width).multipliedBy(0.2)
+            $0.width.height.equalTo(14)
         }
         
-        thumbnailImageView.snp.makeConstraints {
-            $0.top.equalTo(contentView.snp.top).offset(20)
+        commentsCountLabel.snp.makeConstraints {
+            $0.leading.equalTo(commentsImage.snp.trailing).offset(4)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+        }
+        
+        likesImage.snp.makeConstraints {
+            $0.leading.equalTo(commentsCountLabel.snp.trailing).offset(8)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+            $0.width.equalTo(12)
+            $0.height.equalTo(12)
+        }
+        
+        likesCountLabel.snp.makeConstraints {
+            $0.leading.equalTo(likesImage.snp.trailing).offset(4)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
+        }
+    
+        thumnailImageView.snp.makeConstraints{
+            $0.top.equalTo(contentView.snp.top).offset(10)
             $0.trailing.equalTo(contentView.snp.trailing)
-            $0.width.equalTo(contentView.snp.width).multipliedBy(0.26)
-            $0.height.equalTo(thumbnailImageView.snp.width)
-            $0.bottom.lessThanOrEqualTo(contentView.snp.bottom).offset(-15)
+            $0.height.equalTo(90)
+            $0.width.equalTo(90)
+        }
+        
+        userNameLabel.snp.makeConstraints {
+            $0.top.greaterThanOrEqualTo(thumnailImageView.snp.bottom).offset(10)
+            $0.trailing.equalTo(contentView.snp.trailing)
+            $0.bottom.equalTo(contentView.snp.bottom).offset(-10)
         }
     }
 }

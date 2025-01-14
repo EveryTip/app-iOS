@@ -32,6 +32,17 @@ final class HomeViewController: BaseViewController {
     
     //MARK: WeeklyTip Items
     
+    private let roundedBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.setRoundedCorners(
+            radius: 15,
+            corners: .layerMinXMinYCorner, .layerMaxXMinYCorner
+        )
+        
+        return view
+    }()
+    
     private let weeklyTipLabel: UILabel = {
         let label = UILabel()
         label.text = "코끼리는 유일하게 OO를\n하지 못하는 포유류입니다 "
@@ -61,73 +72,19 @@ final class HomeViewController: BaseViewController {
         return imageView
     }()
     
-    //MARK: Search View Items
-    
-    private let searchView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.setRoundedCorners(
-            radius: 15,
-            corners: .layerMinXMinYCorner, .layerMaxXMinYCorner
-        )
-    
-        return view
-    }()
-    
-    private let searchBar: UIButton = {
-        let searchBar = UIButton()
-        searchBar.backgroundColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.00)
-        searchBar.layer.cornerRadius = 10
-        searchBar.layer.masksToBounds = true
-        
-        return searchBar
-    }()
-    
-    private let searchIcon: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "magnifyingglass")
-        imageView.tintColor = UIColor(red: 0.79, green: 0.79, blue: 0.79, alpha: 1.00)
-        
-        return imageView
-    }()
-    
-    //MARK: Tag ScrollView Items
-    
-    // 스크롤 뷰 점점 사라지는 그라데이션 효과 제공
-    private let gradientMaskView: UIView = {
-        let view = UIView()
-        
-        return view
-    }()
-    
-    private let tagButtonsScrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.showsHorizontalScrollIndicator = false
-        
-        return scrollView
-    }()
-    
-    private let tagsStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.spacing = 8
-        
-        return stackView
-    }()
-    
-    private let tagButton: UIButton = {
+    private let searchBarButton: UIButton = {
         let button = UIButton(type: .system)
+        button.backgroundColor = UIColor(hex: "#F6F6F6")
+        button.layer.cornerRadius = 20
         
         return button
     }()
     
-    //MARK: TableView Items
-    
-    private let tableViewBackgroundView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
+    private let searchIcon: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage.et_getImage(for: .searchIcon)
         
-        return view
+        return imageView
     }()
     
     // TODO: 추가 Section 정의
@@ -160,14 +117,6 @@ final class HomeViewController: BaseViewController {
         return button
     }()
     
-    // 레이아웃 편의와 전체적인 높이 컨트롤을 위한 투명 뷰
-    private let spacer: UIView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        
-        return view
-    }()
-    
     private let postListTableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
@@ -182,36 +131,27 @@ final class HomeViewController: BaseViewController {
         setupLayout()
         setupConstraints()
         setupTableView()
-        setupTags()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        applyGradientMask()
     }
     
     private func setupLayout() {
         view.addSubview(weeklyTipLabel)
         view.addSubview(weeklyTipImageView)
         view.addSubview(weeklyTipLearnMoreButton)
-        
-        view.addSubview(searchView)
-        searchBar.addSubview(searchIcon)
-        searchView.addSubview(searchBar)
-        searchView.addSubview(gradientMaskView)
-        
-        gradientMaskView.addSubview(tagButtonsScrollView)
-        tagButtonsScrollView.addSubview(tagsStackView)
-        
-        view.addSubview(spacer)
+        view.addSubview(roundedBackgroundView)
         
         headerView.addSubview(popularTipLabel)
         headerView.addSubview(popularTipLearnMoreButton)
-        
-        view.addSubview(tableViewBackgroundView)
-        view.addSubview(postListTableView)
+        roundedBackgroundView.addSubview(searchBarButton)
+        searchBarButton.addSubview(searchIcon)
+        roundedBackgroundView.addSubview(postListTableView)
     }
     
     private func setupConstraints() {
+        roundedBackgroundView.snp.makeConstraints {
+            $0.top.equalTo(weeklyTipImageView.snp.bottom).offset(30)
+            $0.leading.trailing.bottom.equalTo(view)
+        }
+        
         weeklyTipLabel.snp.makeConstraints{
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(20)
             $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
@@ -229,41 +169,6 @@ final class HomeViewController: BaseViewController {
             $0.height.equalTo(weeklyTipImageView.snp.width).multipliedBy(0.955)
         }
         
-        searchView.snp.makeConstraints {
-            $0.top.equalTo(weeklyTipImageView.snp.bottom).offset(20)
-            $0.leading.equalTo(view.safeAreaLayoutGuide)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide)
-            $0.height.equalTo(searchBar.snp.height).offset(50)
-        }
-        
-        searchBar.snp.makeConstraints {
-            $0.top.equalTo(searchView.snp.top).offset(5)
-            $0.leading.equalTo(searchView.snp.leading).offset(15)
-            $0.trailing.equalTo(searchView.snp.trailing).offset(-15)
-        }
-        
-        searchIcon.snp.makeConstraints {
-            $0.top.equalTo(searchBar.snp.top).offset(5)
-            $0.trailing.equalTo(searchBar.snp.trailing).offset(-10)
-            $0.bottom.equalTo(searchBar.snp.bottom).offset(-5)
-        }
-        
-        gradientMaskView.snp.makeConstraints {
-            $0.top.equalTo(searchBar.snp.bottom).offset(5)
-            $0.leading.equalTo(searchView.snp.leading).offset(15)
-            $0.trailing.equalTo(searchView.snp.trailing).offset(-15)
-            $0.bottom.equalTo(searchView.snp.bottom)
-            $0.height.equalTo(40)
-        }
-        
-        tagButtonsScrollView.snp.makeConstraints {
-            $0.edges.equalTo(gradientMaskView)
-        }
-        
-        tagsStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
         popularTipLabel.snp.makeConstraints {
             $0.leading.equalTo(headerView)
             $0.centerY.equalToSuperview()
@@ -274,25 +179,24 @@ final class HomeViewController: BaseViewController {
             $0.trailing.equalTo(headerView)
         }
         
-        spacer.snp.makeConstraints {
-            $0.top.equalTo(searchView.snp.bottom)
-            $0.leading.equalTo(view.safeAreaLayoutGuide)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide)
-            $0.height.equalTo(20)
+        searchBarButton.snp.makeConstraints {
+            $0.top.equalTo(roundedBackgroundView.snp.top).offset(12)
+            $0.leading.equalTo(roundedBackgroundView).offset(15)
+            $0.trailing.equalTo(roundedBackgroundView).offset(-15)
+            $0.height.equalTo(40)
         }
         
-        tableViewBackgroundView.snp.makeConstraints {
-            $0.top.equalTo(spacer.snp.bottom)
-            $0.leading.equalTo(view.safeAreaLayoutGuide)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+        searchIcon.snp.makeConstraints {
+            $0.top.equalTo(searchBarButton).offset(11)
+            $0.bottom.equalTo(searchBarButton).offset(-11)
+            $0.trailing.equalTo(searchBarButton.snp.trailing).offset(-11)
         }
         
         postListTableView.snp.makeConstraints {
-            $0.top.equalTo(spacer.snp.bottom)
-            $0.leading.equalTo(view.safeAreaLayoutGuide).offset(15)
-            $0.trailing.equalTo(view.safeAreaLayoutGuide).offset(-15)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(searchBarButton.snp.bottom).offset(20)
+            $0.leading.equalTo(roundedBackgroundView).offset(15)
+            $0.trailing.equalTo(roundedBackgroundView).offset(-15)
+            $0.bottom.equalTo(roundedBackgroundView)
         }
     }
     
@@ -301,41 +205,7 @@ final class HomeViewController: BaseViewController {
         headerView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 40)
         postListTableView.tableHeaderView = headerView
         postListTableView.rowHeight = UITableView.automaticDimension
-        postListTableView.estimatedRowHeight = 110
-    }
-    
-    private func setupTags() {
-        let tags = ["#햄버거", "#치킨", "#피자","#햄버거", "#치킨", "#피자","#햄버거", "#치킨", "#피자","#햄버거", "#치킨", "#피자",]
-        for tag in tags {
-            let button = UIButton(type: .system)
-            button.setTitle(" \(tag) ", for: .normal)
-            
-            button.setTitleColor(.et_textColorBlack10, for: .normal)
-            button.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1.00)
-            button.layer.cornerRadius = 10
-            tagsStackView.addArrangedSubview(button)
-        }
-    }
-    
-    // TODO: 동작 방식 개선
-    
-    private func addSpace(forTitleLength length: Int) -> String {
-        if length <= 2 {
-            return String(repeating: "     ", count: length)
-        }
-        return String(repeating: "    ", count: length)
-    }
-    
-    // 태그 스크롤뷰의 그라데이션을 적용하는 메서드
-    private func applyGradientMask() {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.frame = gradientMaskView.bounds
-        gradientLayer.colors = [UIColor.clear.cgColor, UIColor.white.cgColor]
-        
-        gradientLayer.startPoint = CGPoint(x: 1.0, y: 0.5)
-        gradientLayer.endPoint = CGPoint(x: 0.8, y: 0.5)
-        
-        gradientMaskView.layer.mask = gradientLayer
+        postListTableView.estimatedRowHeight = 130
     }
 }
 
@@ -367,14 +237,18 @@ extension HomeViewController: View {
                     cellType: PostListCell.self
                 )
             ) { index, post, cell in
-                cell.categoryLabel.text = " \(post.category) "
-                cell.titleLabel.text = "\(self.addSpace(forTitleLength: post.category.count) + post.title)  "
                 cell.mainTextLabel.text = post.mainText
-                cell.userNameLabel.text = post.userName
-                cell.likeCountLabel.text = post.likeCount.toAbbreviatedString()
-                cell.viewCountLabel.text = post.viewCount.toAbbreviatedString()
-                //            // TODO: 이미지 url을 통한 패칭 적용
-                //            //            cell.thumbnailImageView.image = UIImage(data: <#T##Data#>)
+                cell.userNameLabel.text = "by \(post.userName)"
+                // TODO: API 확정시 entity 변경후 수정
+                // categoryLabel, titleLabel 의 경우 configure 메서드로 호출 및 순서 준수 필요
+                cell.configureCategoryLabel(id: 1)
+                cell.configureTitleLabelText(post.title)
+                
+                // 각 count 계수는 toAbbreviatedString로 파싱해서 사용 할 것
+                cell.viewsCountLabel.text = "\(post.viewCount.toAbbreviatedString())"
+                // TODO: API에 코멘트 개수 추가 필요
+                // cell.commentsCountLabel.text = "\(post.viewCount.toAbbreviatedString())"
+                cell.likesCountLabel.text = "\(post.likeCount.toAbbreviatedString())"
                 
             }.disposed(by: disposeBag)
         

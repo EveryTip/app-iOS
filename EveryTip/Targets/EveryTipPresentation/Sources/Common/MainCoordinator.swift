@@ -29,7 +29,6 @@ public final class DefaultMainCoordinator: MainCoordinator {
     }
     
     public func start() {
-        // TODO: 로그인, 메인 페이지 등 분기 처리
         startMainTab()
     }
     

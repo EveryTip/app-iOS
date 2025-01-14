@@ -271,21 +271,25 @@ final class UserInfoViewController: BaseViewController {
     private func setUserInteraction() {
         let tapGesture = UITapGestureRecognizer(
             target: self,
-            action: #selector(navigationToDetailInfoView)
+            action: #selector(navigationToUserContentsView)
         )
         touchableStackView.addGestureRecognizer(tapGesture)
     }
     
-    // TODO: 구독자 리스트로 이동
+    // TODO: 리액터로 처리하도록 변경
     @objc
-    private func navigationToDetailInfoView() {
-        print(reactor?.currentState.userInfo)
+    private func navigationToUserContentsView() {
+        coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
+            self?.coordinator?.pushToUserContentsView()
+        })
+        
+//        print(reactor?.currentState.userInfo)
     }
     
     private func navigationToAgreementView() {
         coordinator?.pushToAgreementViewcontroller()
     }
-    
+ 
     private func toTestSignInView() {
         let testSignInVC = TestSignInViewController()
         coordinator?.navigationController.pushViewController(testSignInVC, animated: true)
