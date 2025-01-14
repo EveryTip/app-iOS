@@ -138,7 +138,7 @@ final class ExploreViewController: BaseViewController, View {
         
         sortButton.snp.makeConstraints {
             $0.top.equalTo(storyCollectionView.snp.bottom).offset(20)
-            $0.trailing.equalTo(roundedBackgroundView.snp.trailing).offset(-10)
+            $0.trailing.equalTo(roundedBackgroundView.snp.trailing).offset(-20)
         }
         
         postListTableView.snp.makeConstraints {
