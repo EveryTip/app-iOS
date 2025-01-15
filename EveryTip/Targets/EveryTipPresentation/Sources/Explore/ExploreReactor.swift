@@ -16,17 +16,22 @@ import RxSwift
 final class ExploreReactor: Reactor {
     enum Action {
         case sortButtonTapped(SortOptions)
+        case viewDidLoad
     }
     
     enum Mutation {
+        case setStory([DummyStory])
         case setSortImage(UIImage)
     }
     
     struct State {
+        var stories: [DummyStory] = []
         var sortButtonImage: UIImage = UIImage.et_getImage(for: .sortImage_latest)
     }
     
     let initialState: State
+    
+    let useCase = DefaultDummyStory()
     
     init() {
         self.initialState = State()
@@ -48,6 +53,11 @@ final class ExploreReactor: Reactor {
                 image = UIImage.et_getImage(for: .sortImage_likes)
             }
             return .just(.setSortImage(image))
+        case .viewDidLoad:
+            return useCase
+                .getDummy()
+                .asObservable()
+                .map(Mutation.setStory)
         }
     }
     
@@ -57,6 +67,8 @@ final class ExploreReactor: Reactor {
         switch mutation {
         case .setSortImage(let sortImage):
             newState.sortButtonImage = sortImage
+        case .setStory(let stories):
+            newState.stories = stories
         }
         return newState
     }

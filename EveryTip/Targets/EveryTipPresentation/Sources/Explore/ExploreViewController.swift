@@ -104,8 +104,6 @@ final class ExploreViewController: BaseViewController, View {
         setupLayout()
         setupConstraints()
         setupTableView()
-        storyCollectionView.delegate = self
-        storyCollectionView.dataSource = self
     }
     
     private func setupLayout() {
@@ -197,6 +195,11 @@ final class ExploreViewController: BaseViewController, View {
                 self?.presentSortAlert()
             }
             .disposed(by: disposeBag)
+        
+        rx.viewDidLoad
+            .map { _ in Reactor.Action.viewDidLoad }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindOutput(to reactor: ExploreReactor) {
@@ -205,32 +208,16 @@ final class ExploreViewController: BaseViewController, View {
             .distinctUntilChanged()
             .bind(to: sortButton.rx.image(for: .normal))
             .disposed(by: disposeBag)
-    }
-}
-
-extension ExploreViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        20
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: StoryCollectionViewCell.reuseIdentifier,
-            for: indexPath
-        )
         
-        return cell
-    }
-    
-    // TODO: Cell reuse로 인한 오류 존재, 동작 개선할것
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? StoryCollectionViewCell else { return }
-        cell.setSelected(true)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        guard let cell = collectionView.cellForItem(at: indexPath) as? StoryCollectionViewCell else { return }
-        cell.setSelected(false)
+        reactor.state
+            .map { $0.stories }
+            .bind(to: storyCollectionView.rx.items(
+                cellIdentifier: StoryCollectionViewCell.reuseIdentifier,
+                cellType: StoryCollectionViewCell.self)
+            ) { index, data, cell in
+                cell.userNameLabel.text = data.userName
+                cell.profileImageView.image = data.userProfileIamge
+            }
+            .disposed(by: disposeBag)
     }
 }
