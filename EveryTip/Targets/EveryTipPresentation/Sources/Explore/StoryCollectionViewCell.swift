@@ -13,9 +13,7 @@ import EveryTipDesignSystem
 import SnapKit
 import ReactorKit
 
-final class StoryCollectionViewCell: UICollectionViewCell, Reusable ,View {
-    
-    var disposeBag: RxSwift.DisposeBag = DisposeBag()
+final class StoryCollectionViewCell: UICollectionViewCell, Reusable {
     
     let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -92,16 +90,5 @@ final class StoryCollectionViewCell: UICollectionViewCell, Reusable ,View {
     
     func setSelected(_ isSelected: Bool)  {
         selectedOverlayView.isHidden = !isSelected
-    }
-    
-    func bind(reactor: StoryCellReactor) {
-        reactor.state.map { $0.isSelected }
-            .distinctUntilChanged()
-            .observe(on: MainScheduler.instance)
-            .bind { [weak self] isSelected in
-                guard let self = self else { return }
-                self.selectedOverlayView.isHidden = !isHidden
-            }
-            .disposed(by: disposeBag)
     }
 }
