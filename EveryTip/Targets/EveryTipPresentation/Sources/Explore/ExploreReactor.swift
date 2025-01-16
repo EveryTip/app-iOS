@@ -29,7 +29,7 @@ final class ExploreReactor: Reactor {
     struct State {
         var stories: [DummyStory] = []
         var sortButtonImage: UIImage = UIImage.et_getImage(for: .sortImage_latest)
-        var selectedUserName: String = ""
+        var selectedUserName: String? = nil
     }
     
     let initialState: State

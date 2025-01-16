@@ -38,7 +38,6 @@ final class ExploreViewController: BaseViewController, View {
             style: .bold,
             size: 18
         )
-        label.text = "전체 팁 목록 👀"
         
         return label
     }()
@@ -226,7 +225,16 @@ final class ExploreViewController: BaseViewController, View {
                 // TODO: 단순 스트링값으로 비교 중, 추후 API에 따라 더 변수 없이 처리 ex) UUID 등으로
                 let isSelected = data.userName == reactor.currentState.selectedUserName
                 cell.setSelected(isSelected)
+                
+                if reactor.currentState.selectedUserName == nil {
+                    self.exploreTitleLabel.text = "전체 팁 목록 👀"
+                } else {
+                    self.exploreTitleLabel.text = "\(reactor.currentState.selectedUserName ?? "")님 팁 목록 👀"
+                }
             }
             .disposed(by: disposeBag)
+       
+        
+        
     }
 }
