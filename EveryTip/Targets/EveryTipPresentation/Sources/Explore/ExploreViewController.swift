@@ -200,8 +200,13 @@ final class ExploreViewController: BaseViewController, View {
             .map { _ in Reactor.Action.viewDidLoad }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        storyCollectionView.rx.modelSelected(DummyStory.self)
+            .map{ dummy in Reactor.Action.storyCellTapped(selectedUserName: dummy.userName)}
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
-    
+
     private func bindOutput(to reactor: ExploreReactor) {
         reactor.state
             .map { $0.sortButtonImage }
@@ -217,6 +222,10 @@ final class ExploreViewController: BaseViewController, View {
             ) { index, data, cell in
                 cell.userNameLabel.text = data.userName
                 cell.profileImageView.image = data.userProfileIamge
+                
+                // TODO: 단순 스트링값으로 비교 중, 추후 API에 따라 더 변수 없이 처리 ex) UUID 등으로
+                let isSelected = data.userName == reactor.currentState.selectedUserName
+                cell.setSelected(isSelected)
             }
             .disposed(by: disposeBag)
     }

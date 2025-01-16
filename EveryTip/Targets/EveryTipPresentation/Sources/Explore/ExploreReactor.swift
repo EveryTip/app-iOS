@@ -17,20 +17,24 @@ final class ExploreReactor: Reactor {
     enum Action {
         case sortButtonTapped(SortOptions)
         case viewDidLoad
+        case storyCellTapped(selectedUserName: String)
     }
     
     enum Mutation {
         case setStory([DummyStory])
         case setSortImage(UIImage)
+        case setSelectedUserName(String)
     }
     
     struct State {
         var stories: [DummyStory] = []
         var sortButtonImage: UIImage = UIImage.et_getImage(for: .sortImage_latest)
+        var selectedUserName: String = ""
     }
     
     let initialState: State
     
+    // TODO: real useCase로 변경
     let useCase = DefaultDummyStory()
     
     init() {
@@ -53,11 +57,15 @@ final class ExploreReactor: Reactor {
                 image = UIImage.et_getImage(for: .sortImage_likes)
             }
             return .just(.setSortImage(image))
+            
         case .viewDidLoad:
             return useCase
                 .getDummy()
                 .asObservable()
                 .map(Mutation.setStory)
+            
+        case .storyCellTapped(selectedUserName: let name):
+            return .just(Mutation.setSelectedUserName(name))
         }
     }
     
@@ -69,6 +77,8 @@ final class ExploreReactor: Reactor {
             newState.sortButtonImage = sortImage
         case .setStory(let stories):
             newState.stories = stories
+        case .setSelectedUserName(let name):
+            newState.selectedUserName = name
         }
         return newState
     }
