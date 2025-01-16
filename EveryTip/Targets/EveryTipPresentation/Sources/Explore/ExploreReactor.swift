@@ -27,9 +27,15 @@ final class ExploreReactor: Reactor {
     }
     
     struct State {
-        var stories: [DummyStory] = []
+        // 구독자가 없어도 존재
+        var stories: [DummyStory] = [
+            DummyStory(userName: "전체팁",
+                       userProfileIamge: UIImage.et_getImage(for: .everyTipLogo_story)
+                .withAlignmentRectInsets(UIEdgeInsets(top: -14.4, left: -14.4, bottom: -14.4, right: -14.4))
+                      )
+        ]
         var sortButtonImage: UIImage = UIImage.et_getImage(for: .sortImage_latest)
-        var selectedUserName: String? = nil
+        var selectedUserName: String? = "전체팁"
     }
     
     let initialState: State
@@ -76,7 +82,7 @@ final class ExploreReactor: Reactor {
         case .setSortImage(let sortImage):
             newState.sortButtonImage = sortImage
         case .setStory(let stories):
-            newState.stories = stories
+            newState.stories += stories
         case .setSelectedUserName(let name):
             newState.selectedUserName = name
         }
