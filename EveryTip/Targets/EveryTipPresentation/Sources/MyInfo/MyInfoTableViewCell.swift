@@ -8,7 +8,7 @@
 
 import UIKit
 
-final class UserInfoTableViewCell: UITableViewCell, Reusable {
+final class MyInfoTableViewCell: UITableViewCell, Reusable {
     
     let leftLabel: UILabel = {
         let label = UILabel()

@@ -19,9 +19,9 @@ final class AgreementViewController: BaseViewController {
     weak var coordinator: AgreementCoordinator?
     var disposeBag = DisposeBag()
     
-    var useCase: AgreementUseCase?
+    var useCase: AuthUseCase?
 
-    init(useCase: AgreementUseCase) {
+    init(useCase: AuthUseCase) {
         super.init(nibName: nil, bundle: nil)
         self.useCase = useCase
     }

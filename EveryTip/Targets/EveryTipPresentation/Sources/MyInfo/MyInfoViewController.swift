@@ -1,5 +1,5 @@
 //
-//  UserInfoViewController.swift
+//  MyInfoViewController.swift
 //  EveryTipPresentation
 //
 //  Created by 김경록 on 7/31/24.
@@ -15,9 +15,9 @@ import RxCocoa
 import RxSwift
 import SnapKit
 
-final class UserInfoViewController: BaseViewController {
+final class MyInfoViewController: BaseViewController {
     
-    weak var coordinator: UserInfoViewCoordinator?
+    weak var coordinator: MyInfoViewCoordinator?
     var disposeBag = DisposeBag()
     
     private let roundedBackgroundView: UIView = {
@@ -45,7 +45,6 @@ final class UserInfoViewController: BaseViewController {
             style: .semiBold,
             size: 22
         )
-        label.text = "고앵이"
         
         return label
     }()
@@ -171,7 +170,7 @@ final class UserInfoViewController: BaseViewController {
         return tableView
     }()
     
-    init(reactor: UserInfoReactor) {
+    init(reactor: MyInfoReactor) {
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
     }
@@ -263,8 +262,8 @@ final class UserInfoViewController: BaseViewController {
         userInfoTableView.dataSource = self
         
         userInfoTableView.register(
-            UserInfoTableViewCell.self,
-            forCellReuseIdentifier: UserInfoTableViewCell.reuseIdentifier
+            MyInfoTableViewCell.self,
+            forCellReuseIdentifier: MyInfoTableViewCell.reuseIdentifier
         )
     }
     
@@ -282,8 +281,6 @@ final class UserInfoViewController: BaseViewController {
         coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
             self?.coordinator?.pushToUserContentsView()
         })
-        
-//        print(reactor?.currentState.userInfo)
     }
     
     private func navigationToAgreementView() {
@@ -296,7 +293,7 @@ final class UserInfoViewController: BaseViewController {
     }
 }
 
-extension UserInfoViewController: UITableViewDelegate {
+extension MyInfoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 4: navigationToAgreementView()
@@ -307,7 +304,7 @@ extension UserInfoViewController: UITableViewDelegate {
     }
 }
 
-extension UserInfoViewController: UITableViewDataSource {
+extension MyInfoViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let reactor = reactor else { return 0 }
         
@@ -316,9 +313,9 @@ extension UserInfoViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = userInfoTableView.dequeueReusableCell(
-            withIdentifier: UserInfoTableViewCell.reuseIdentifier,
+            withIdentifier: MyInfoTableViewCell.reuseIdentifier,
             for: indexPath
-        ) as? UserInfoTableViewCell else { return
+        ) as? MyInfoTableViewCell else { return
             UITableViewCell()
         }
         
@@ -343,17 +340,17 @@ extension UserInfoViewController: UITableViewDataSource {
 
 //MARK: Reactor
 
-extension UserInfoViewController: View {
-    func bind(reactor: UserInfoReactor) {
+extension MyInfoViewController: View {
+    func bind(reactor: MyInfoReactor) {
         bindInputs(to: reactor)
         bindOutputs(to: reactor)
     }
     
-    private func bindInputs(to reactor: UserInfoReactor) {
+    private func bindInputs(to reactor: MyInfoReactor) {
         self.reactor?.action.onNext(.viewDidLoad)
     }
     
-    private func bindOutputs(to reactor: UserInfoReactor) {
+    private func bindOutputs(to reactor: MyInfoReactor) {
         reactor.state.map { $0.userName }
             .bind(to: userNameLable.rx.text)
             .disposed(by: disposeBag)

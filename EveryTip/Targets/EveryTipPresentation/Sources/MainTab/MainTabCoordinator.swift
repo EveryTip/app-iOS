@@ -47,7 +47,7 @@ final class DefaultMainTabCoordinator: MainTabCoordinator {
         exploreCoordinator.parentCoordinator = self
         append(child: exploreCoordinator)
         
-        let userInfoCoodinator = DefaultUserInfoViewCoordinator(navigationController: navigationController)
+        let userInfoCoodinator = DefaultMyInfoViewCoordinator(navigationController: navigationController)
         userInfoCoodinator.parentCoordinator = self
         append(child: userInfoCoodinator)
         

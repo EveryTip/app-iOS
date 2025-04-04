@@ -9,7 +9,7 @@
 import UIKit
 
 public struct Constants {
-    public struct UserInfo {
+    public struct MyInfo {
         public static let tableViewItems: [String] = [
             "공지사항",
             "고객센터",

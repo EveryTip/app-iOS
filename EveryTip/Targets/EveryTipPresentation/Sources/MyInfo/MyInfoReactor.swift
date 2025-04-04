@@ -1,5 +1,5 @@
 //
-//  UserInfoReactor.swift
+//  MyInfoReactor.swift
 //  EveryTipPresentation
 //
 //  Created by 김경록 on 7/31/24.
@@ -13,7 +13,7 @@ import EveryTipDomain
 import ReactorKit
 import RxSwift
 
-class UserInfoReactor: Reactor {
+class MyInfoReactor: Reactor {
     enum Action {
         // TODO: 프로필 편집, 각 아이템 터치 처리
         case viewDidLoad
@@ -21,12 +21,12 @@ class UserInfoReactor: Reactor {
     
     enum Mutation {
         //viewDidLoad 시
-        case setUserData(User)
+        case setMyProfileData(MyProfile)
         case setError(Error)
     }
     
     struct State {
-        var userInfo: User?
+        var myProfile: MyProfile?
         var userName: String?
         var subscribersCount: String?
         var postedTipCount: String?
@@ -37,19 +37,24 @@ class UserInfoReactor: Reactor {
     
     let initialState: State
     
-    private let userInfoUserCase: UserInfoUseCase
+    private let userUseCase: UserUseCase
     
-    init(userInfoUserCase: UserInfoUseCase) {
-        self.userInfoUserCase = userInfoUserCase
-        self.initialState = State()
+    init(userUseCase: UserUseCase) {
+        self.userUseCase = userUseCase
+        self.initialState = State(
+            userName: "게스트",
+            subscribersCount: "0",
+            postedTipCount: "0",
+            savedTipCount: "0"
+        )
     }
     
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .viewDidLoad:
-            return userInfoUserCase.fetchUserInfo()
+            return userUseCase.fetchMyProfile()
                 .asObservable()
-                .map(Mutation.setUserData)
+                .map(Mutation.setMyProfileData)
                 .catch { error in
                     Observable.just(Mutation.setError(error))
                 }
@@ -60,12 +65,12 @@ class UserInfoReactor: Reactor {
         var newState = state
         
         switch mutation {
-        case .setUserData(let userInfo):
-            newState.userInfo = userInfo
-            newState.userName = userInfo.userName
-            newState.subscribersCount = userInfo.userStatistics.subscribersCount.toAbbreviatedString()
-            newState.postedTipCount = userInfo.userStatistics.postedTipCount.toAbbreviatedString()
-            newState.savedTipCount = userInfo.userStatistics.savedTipCount.toAbbreviatedString()
+        case .setMyProfileData(let myProfile):
+            newState.myProfile = myProfile
+            newState.userName = myProfile.nickName
+            newState.subscribersCount = myProfile.subscriberCount.toAbbreviatedString()
+            newState.postedTipCount = myProfile.tipCount.toAbbreviatedString()
+            newState.savedTipCount = myProfile.savedTipCount.toAbbreviatedString()
         case .setError(let error):
             newState.fetchError = error
         }
@@ -74,7 +79,6 @@ class UserInfoReactor: Reactor {
     }
     
     func getInfoTableViewItems() -> [String] {
-        Constants.UserInfo.tableViewItems
+        Constants.MyInfo.tableViewItems
     }
 }
-

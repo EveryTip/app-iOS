@@ -26,7 +26,7 @@ final class DefaultAgreementCoordinator: AgreementCoordinator {
     }
     
     func start() {
-        guard let useCase = Container.shared.resolve(AgreementUseCase.self) else {
+        guard let useCase = Container.shared.resolve(AuthUseCase.self) else {
             fatalError("의존성 주입이 올바르지않습니다!")
         }
         

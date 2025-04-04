@@ -28,11 +28,11 @@ final class LoginReactor: Reactor {
     }
     
     let initialState: State
-    private var loginUseCase: RequestTokenUseCase
+    private var authUseCase: AuthUseCase
     private let tokenManager = TokenKeyChainManager.shared
     
-    init(loginUseCase: RequestTokenUseCase) {
-        self.loginUseCase = loginUseCase
+    init(authUseCase: AuthUseCase) {
+        self.authUseCase = authUseCase
         self.initialState = State()
     }
     
@@ -40,7 +40,7 @@ final class LoginReactor: Reactor {
         switch action {
         case .loginButtonTapped(email: let email, password: let password):
             
-            return loginUseCase.excute(
+            return authUseCase.logIn(
                 email: email,
                 password: password
             )
@@ -48,11 +48,11 @@ final class LoginReactor: Reactor {
             .flatMap { [weak self] token -> Observable<Mutation> in
                 guard let self = self else { return .empty() }
                 let isAccessTokenStored = self.tokenManager.storeToken(
-                    token.data.accessToken,
+                    token.accessToken,
                     type: .access
                 )
                 let isRefreshTokenStored = self.tokenManager.storeToken(
-                    token.data.refreshToken,
+                    token.refreshToken,
                     type: .refresh
                 )
                 

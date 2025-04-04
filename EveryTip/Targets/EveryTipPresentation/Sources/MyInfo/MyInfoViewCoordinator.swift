@@ -13,13 +13,13 @@ import Swinject
 import EveryTipDomain
 import EveryTipCore
 import RxSwift
-protocol UserInfoViewCoordinator: AuthenticationCoordinator {
+protocol MyInfoViewCoordinator: AuthenticationCoordinator {
     func start() -> UIViewController
     func pushToAgreementViewcontroller()
     func pushToUserContentsView()
 }
 
-final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
+final class DefaultMyInfoViewCoordinator: MyInfoViewCoordinator {
     var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = []
@@ -35,12 +35,12 @@ final class DefaultUserInfoViewCoordinator: UserInfoViewCoordinator {
     func start() { }
     
     func start() -> UIViewController {
-        guard let useCase = container.resolve(UserInfoUseCase.self) else {
+        guard let useCase = container.resolve(UserUseCase.self) else {
             fatalError("의존성 주입이 옳바르지않습니다! \(self)")
         }
-        let reactor = UserInfoReactor(userInfoUserCase: useCase)
+        let reactor = MyInfoReactor(userUseCase: useCase)
         
-        let userInfoViewController = UserInfoViewController(reactor: reactor)
+        let userInfoViewController = MyInfoViewController(reactor: reactor)
         userInfoViewController.coordinator = self
         return userInfoViewController
     }

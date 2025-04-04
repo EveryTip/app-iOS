@@ -10,13 +10,11 @@ import RxSwift
 
 import Foundation
 
-// TODO: 각 Auth관련 UseCase 통합
-
 public protocol AuthUseCase {
     func requestEmailCode(email: String) -> Completable
     func checkEmailCode(code: String) -> Completable
     func getAgreements() -> Single<[Agreements]>
-    func loginIn(email: String, password: String) -> Single<Account>
+    func logIn(email: String, password: String) -> Single<Account>
     func signUp(
         email: String,
         passwrod: String,
@@ -53,7 +51,7 @@ public final class DefaultAuthUseCase: AuthUseCase {
         agreementsRepository.fetchAgreements()
     }
     
-    public func loginIn(email: String, password: String) -> Single<Account> {
+    public func logIn(email: String, password: String) -> Single<Account> {
         accountRepository.login(with: email, password: password)
     }
     
