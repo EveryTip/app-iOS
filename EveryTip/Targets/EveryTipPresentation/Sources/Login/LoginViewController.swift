@@ -7,7 +7,7 @@
 //
 
 import UIKit
- 
+
 import SnapKit
 import ReactorKit
 import RxSwift
@@ -69,7 +69,7 @@ final class LoginViewController: BaseViewController {
         return label
     }()
     
-    private let registerButton: UIButton = {
+    private let signupButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("회원가입", for: .normal)
         button.titleLabel?.font = UIFont.et_pretendard(style: .medium, size: 14)
@@ -92,6 +92,7 @@ final class LoginViewController: BaseViewController {
         super.viewDidLoad()
         setupLayout()
         setupConstraints()
+        signupButton.addTarget(self, action: #selector(pushToSignUpView), for: .touchUpInside)
     }
     
     init(reactor: LoginReactor) {
@@ -117,7 +118,7 @@ final class LoginViewController: BaseViewController {
             loginButton,
             searchPasswordButton,
             separator,
-            registerButton
+            signupButton
         )
     }
     
@@ -143,7 +144,7 @@ final class LoginViewController: BaseViewController {
             $0.top.equalTo(emailTextFieldView.snp.bottom).offset(10)
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
-  
+        
         searchPasswordButton.snp.makeConstraints {
             $0.top.equalTo(passwordTextFieldView.snp.bottom).offset(8)
             $0.trailing.equalTo(separator.snp.leading).offset(-20)
@@ -154,7 +155,7 @@ final class LoginViewController: BaseViewController {
             $0.centerX.equalTo(view.center.x)
         }
         
-        registerButton.snp.makeConstraints {
+        signupButton.snp.makeConstraints {
             $0.top.equalTo(passwordTextFieldView.snp.bottom).offset(8)
             
             $0.leading.equalTo(separator.snp.trailing).offset(20)
@@ -165,6 +166,11 @@ final class LoginViewController: BaseViewController {
             $0.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
             $0.height.equalTo(56)
         }
+    }
+    
+    @objc
+    private func pushToSignUpView() {
+        coordinator?.pushToSignupView()
     }
 }
 

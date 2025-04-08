@@ -34,7 +34,8 @@ extension AuthenticationCoordinator {
     
     func pushToLoginView() {
         let loginCoordinator: LoginCoordinator = DefaultLoginCoordinator(navigationController: navigationController)
-        
+        loginCoordinator.parentCoordinator = self
+        self.childCoordinators.append(loginCoordinator)
         loginCoordinator.start()
     }
     

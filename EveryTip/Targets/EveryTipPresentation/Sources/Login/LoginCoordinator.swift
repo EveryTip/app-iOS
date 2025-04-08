@@ -13,6 +13,7 @@ import Swinject
 
 protocol LoginCoordinator: Coordinator {
     func startAndReturnViewController() -> UIViewController
+    func pushToSignupView()
 }
 
 final class DefaultLoginCoordinator: LoginCoordinator {
@@ -51,6 +52,13 @@ final class DefaultLoginCoordinator: LoginCoordinator {
         loginViewController.coordinator = self
         return loginViewController
     }
+    
+    func pushToSignupView() {
+           let signUpCoordinator = DefaultSignupCoordinator(navigationController: navigationController)
+           signUpCoordinator.parentCoordinator = self
+           self.append(child: signUpCoordinator)
+           signUpCoordinator.start()
+       }
     
     func didFinish() {
         parentCoordinator?.remove(child: self)

@@ -101,12 +101,13 @@ final class EveryTipTextFieldView: UIView {
         hasSecureTextButton: Bool = false,
         textFieldRightInset: CGFloat = 16
     ) {
-        textField.clearButtonMode = hasClearButton ? .always : .never
+        textField.clearButtonMode = hasClearButton ? .whileEditing : .never
         textField.isSecureTextEntry = hasSecureTextButton
         self.textFieldRightInset = textFieldRightInset
         super.init(frame: .zero)
         setupLayout()
         setupConstraints()
+        setupGuideMessagePriority()
         bind()
     }
     
@@ -116,6 +117,11 @@ final class EveryTipTextFieldView: UIView {
     }
     
     // MARK: -
+    
+    private func setupGuideMessagePriority() {
+        guideMessageLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        guideMessageLabel.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
+    }
     
     private func setupLayout() {
         addSubview(containerStackView)
@@ -177,24 +183,35 @@ final class EveryTipTextFieldView: UIView {
         let statusBinder: Binder<EveryTipTextFieldStatus> = Binder(self) { view, status in
             switch status {
             case .normal:
+                view.textField.isEnabled = true
+                view.borderView.backgroundColor = .white
                 view.borderView.layer.borderColor = view.borderColorWhenNormal.cgColor
                 view.setGuideMessageViewIsHiddenWithAnimate(isHidden: true)
                 
             case .editing:
+                view.textField.isEnabled = true
+                view.borderView.backgroundColor = .white
                 view.borderView.layer.borderColor = view.borderColorWhenEditing.cgColor
                 
             case .success:
+                view.textField.isEnabled = true
+                view.borderView.backgroundColor = .white
                 view.borderView.layer.borderColor = view.borderColorWhenSuccess.cgColor
                 view.guideMessageLabel.textColor = view.borderColorWhenSuccess
                 let isHidden = view.guideMessageLabel.text == nil
                 view.setGuideMessageViewIsHiddenWithAnimate(isHidden: isHidden)
                 
             case .error:
+                view.textField.isEnabled = true
+                view.borderView.backgroundColor = .white
                 view.borderView.layer.borderColor = view.borderColorWhenError.cgColor
                 view.guideMessageLabel.textColor = view.borderColorWhenError
                 view.setGuideMessageViewIsHiddenWithAnimate(isHidden: false)
                 
             case .notEnabled:
+                view.textField.resignFirstResponder()
+                view.textField.isEnabled = false
+                view.borderView.backgroundColor = UIColor.et_lineGray20
                 view.borderView.layer.borderColor = view.borderColorWhenNotEnabled.cgColor
                 view.setGuideMessageViewIsHiddenWithAnimate(isHidden: true)
             }
