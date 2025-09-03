@@ -132,7 +132,7 @@ func makeEveryTipAppTarget(
         "NSAppTransportSecurity": [
             "NSAllowsArbitraryLoads": true
         ],
-        "NSPhotoLibraryUsageDescription": "앱에서 사진을 선택하기 위해 접근합니다.",
+        "NSPhotoLibraryUsageDescription": "에브리 팁에서 게시글 작성 시 사진을 업로드하기 위해 사진 라이브러리에 접근합니다.",
         "LSApplicationCategoryType": "public.app-category.social-networking",
         "ITSAppUsesNonExemptEncryption": false
     ]

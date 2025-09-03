@@ -19,6 +19,7 @@ final class EditProfileReactor: Reactor {
     
     enum EditProfileItem {
         case changePassword
+        case manageBlockedUser
         case deleteAccount
     }
     
@@ -32,6 +33,7 @@ final class EditProfileReactor: Reactor {
         case setChangePasswordSignal(Bool)
         case setDeleteAccountSignal(Bool)
         case setToast(String)
+        case setManageBlockedUserSignal(Bool)
         case setDismissSignal(Bool)
     }
     
@@ -39,11 +41,13 @@ final class EditProfileReactor: Reactor {
         var nickName: String?
         var options: [EditProfileItem] = [
             .changePassword,
+            .manageBlockedUser,
             .deleteAccount
         ]
         
         @Pulse var changePasswordSignal: Bool = false
         @Pulse var deleteAccountSignal: Bool = false
+        @Pulse var manageBlockedUserSignal: Bool = false
         @Pulse var toastMessage: String?
         @Pulse var dismissSignal: Bool = false
     }
@@ -68,6 +72,9 @@ final class EditProfileReactor: Reactor {
                 return .just(.setChangePasswordSignal(true))
                 
             case 1:
+                return .just(.setManageBlockedUserSignal(true))
+                
+            case 2:
                 return .just(.setDeleteAccountSignal(true))
                 
             default:
@@ -98,6 +105,8 @@ final class EditProfileReactor: Reactor {
             newState.toastMessage = message
         case .setDismissSignal(let signal):
             newState.dismissSignal = signal
+        case .setManageBlockedUserSignal(let signal):
+            newState.manageBlockedUserSignal = signal
         }
         return newState
     }

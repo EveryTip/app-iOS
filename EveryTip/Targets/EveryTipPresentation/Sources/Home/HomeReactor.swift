@@ -108,11 +108,13 @@ class HomeReactor: Reactor {
         
         switch mutation {
         case .setTips(let tips):
-            newState.tips = tips
-            newState.popularTips = tips.topPopular()
+            // 차단 로직 임시 적용, 추후 visibleTips 삭제
+            let visibleTips = tips.filteredByBlockedUsers()
+            newState.tips = visibleTips
+            newState.popularTips = visibleTips.topPopular()
             
             let categoryIDs = newState.myCategories.map { $0.id }
-            let filtered = tips.filter { categoryIDs.contains($0.categoryId) }
+            let filtered = visibleTips.filter { categoryIDs.contains($0.categoryId) }
             newState.categorizedTips = Array(filtered.prefix(3))
             
         case .setSelectedTip(let tip):
@@ -137,5 +139,17 @@ class HomeReactor: Reactor {
         }
         
         return newState
+    }
+}
+
+//임시 차단 로직
+
+private extension Array where Element == Tip {
+    func filteredByBlockedUsers() -> [Tip] {
+        let blocked: Set<Int> = BlockManager.blockedUserIds
+        return self.filter { tip in
+            let authorId = tip.writer.id
+            return !blocked.contains(authorId)
+        }
     }
 }

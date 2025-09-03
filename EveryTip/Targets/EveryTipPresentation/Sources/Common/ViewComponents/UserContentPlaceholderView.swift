@@ -19,6 +19,7 @@ final class UserContentPlaceholderView: UIView {
         case savedTip
         case emptyTip
         case emptySearchResult
+        case blockedUser
         
         var message: String {
             switch self {
@@ -34,6 +35,8 @@ final class UserContentPlaceholderView: UIView {
                 return "아직 작성된 팁이 없어요 다른 팁도 구경해볼까요?"
             case .emptySearchResult:
                 return "해당 검색어를 통한 결과가 없어요"
+            case .blockedUser:
+                return "차단 된 유저는 여기서 관리할 수 있어요"
             }
         }
     }

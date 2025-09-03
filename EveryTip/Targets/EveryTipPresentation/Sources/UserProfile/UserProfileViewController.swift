@@ -207,25 +207,90 @@ final class UserProfileViewController: BaseViewController {
         )
     }
     
-    private func showReportAlert(
-        confirmHandler: @escaping () -> Void
-    ) {
+    private enum ProfileAction {
+        case report
+        case block
+        
+        var title: String {
+            switch self {
+            case .report: return "신고하기"
+            case .block:  return "차단하기"
+            }
+        }
+        
+        var confirmTitle: String {
+            switch self {
+            case .report: return "이 사용자를 신고할까요?"
+            case .block:  return "이 사용자를 차단할까요?"
+            }
+        }
+        
+        var confirmMessage: String {
+            switch self {
+            case .report:
+                return "커뮤니티 가이드에 따라 신고 사유에 해당하는지 검토 후 처리됩니다."
+            case .block:
+                return "차단하면 서로의 콘텐츠가 표시되지 않아요. 계속할까요?"
+            }
+        }
+    }
+
+    private func showProfileActionsBottomSheet() {
+        let sheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let report = UIAlertAction(
+            title: ProfileAction.report.title,
+            style: .destructive
+        ) { [weak self] _ in
+            self?.presentConfirmAlert(for: .report)
+        }
+        
+        let block = UIAlertAction(
+            title: ProfileAction.block.title,
+            style: .default
+        ) { [weak self] _ in
+            self?.presentConfirmAlert(for: .block)
+        }
+        
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+        
+        sheet.addAction(report)
+        sheet.addAction(block)
+        sheet.addAction(cancel)
+        
+        // iPad / popover 대응 (customView로 넣은 버튼이라 sourceView 설정 필요)
+        if let popover = sheet.popoverPresentationController {
+            popover.sourceView = ellipsisButton
+            popover.sourceRect = ellipsisButton.bounds
+            popover.permittedArrowDirections = .up
+        }
+        
+        present(sheet, animated: true, completion: nil)
+    }
+
+    private func presentConfirmAlert(for action: ProfileAction) {
         let alert = UIAlertController(
-            title: "이 사용자를 신고할까요?",
-            message: "커뮤니티 가이드에 따라 신고 사유에 해당하는지 검토 후 처리됩니다.",
+            title: action.confirmTitle,
+            message: action.confirmMessage,
             preferredStyle: .alert
         )
         
-        let okAction = UIAlertAction(title: "확인", style: .default) { _ in
-            confirmHandler()
+        let ok = UIAlertAction(title: "확인", style: .default) { [weak self] _ in
+            guard let self else { return }
+            self.coordinator?.checkLoginBeforeAction {
+                switch action {
+                case .report:
+                    self.reactor?.action.onNext(.reportUser)
+                case .block:
+                    self.reactor?.action.onNext(.blockUser)
+                }
+            }
         }
+        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
         
-        alert.addAction(okAction)
-        
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-        alert.addAction(cancelAction)
-        
-        self.present(alert, animated: true, completion: nil)
+        alert.addAction(ok)
+        alert.addAction(cancel)
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -364,11 +429,8 @@ extension UserProfileViewController: View {
         reactor.pulse(\.$ellipsisSignal)
             .filter { $0 == true }
             .subscribe(onNext: { [weak self] _ in
-                self?.showReportAlert() {
-                    self?.coordinator?.checkLoginBeforeAction {
-                        self?.reactor?.action.onNext(.reportUser)
-                    }
-                }
+                self?.showProfileActionsBottomSheet()
+                
             })
             .disposed(by: disposeBag)
     }
