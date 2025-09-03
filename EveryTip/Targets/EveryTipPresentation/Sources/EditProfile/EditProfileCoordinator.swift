@@ -15,6 +15,7 @@ import Swinject
 protocol EditProfileCoordinator: AuthenticationCoordinator {
     func popToRootView()
     func pushToEditPassword()
+    func pushToBlockedList()
 }
 
 final class DefaultEditProfileCoordinator: EditProfileCoordinator {
@@ -58,6 +59,13 @@ final class DefaultEditProfileCoordinator: EditProfileCoordinator {
         editPasswordCoordinator.start()
     }
     
+    func pushToBlockedList() {
+        let blockedListCoordinator = DefaultBlockedListCoordinator(navigationController: navigationController)
+        self.append(child: blockedListCoordinator)
+        
+        blockedListCoordinator.start()
+    }
+
     func didFinish() {
         parentCoordinator?.remove(child: self)
     }

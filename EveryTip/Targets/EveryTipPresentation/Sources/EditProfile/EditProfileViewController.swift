@@ -164,6 +164,9 @@ extension EditProfileViewController: View {
                 case .changePassword:
                     cell.leftLabel.text = "비밀번호 변경"
                     cell.accessoryType = .disclosureIndicator
+                case .manageBlockedUser:
+                    cell.leftLabel.text = "차단 유저 관리"
+                    cell.accessoryType = .disclosureIndicator
                 case .deleteAccount:
                     cell.leftLabel.text = "회원 탈퇴"
                     cell.leftLabel.textColor = .red
@@ -175,6 +178,13 @@ extension EditProfileViewController: View {
             .filter { $0 == true }
             .bind { [weak self] _ in
                 self?.coordinator?.pushToEditPassword()
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.pulse(\.$manageBlockedUserSignal)
+            .filter { $0 == true }
+            .bind { [weak self] _ in
+                self?.coordinator?.pushToBlockedList()
             }
             .disposed(by: disposeBag)
         

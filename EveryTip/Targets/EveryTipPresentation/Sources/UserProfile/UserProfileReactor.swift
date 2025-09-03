@@ -22,6 +22,7 @@ final class UserProfileReactor: Reactor {
         case itemSelected(Tip)
         case profileEllipsisButtonTapped
         case reportUser
+        case blockUser
     }
     
     enum Mutation {
@@ -115,6 +116,18 @@ final class UserProfileReactor: Reactor {
             return userUseCase.reportUser().andThen(
                 .just(.setToast("유저 신고가 접수되었습니다."))
             )
+        case .blockUser:
+            return Observable.deferred { [weak self] in
+                guard let self = self else { return .just(.setToast("알 수 없는 오류가 발생했어요.")) }
+                let id = self.userID
+                
+                if BlockManager.isBlocked(userId: id) {
+                    return .just(.setToast("이미 차단한 사용자예요."))
+                } else {
+                    BlockManager.block(userId: id)
+                    return .just(.setToast("사용자를 차단했어요. 더 이상 이 사용자의 콘텐츠가 표시되지 않아요."))
+                }
+            }
         }
     }
     

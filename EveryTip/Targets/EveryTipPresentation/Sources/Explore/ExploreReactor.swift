@@ -69,25 +69,30 @@ final class ExploreReactor: Reactor {
 
         case .refresh:
             let followersObservable = userUseCase.fetchMyFollowing()
-                    .asObservable()
-                    .catchAndReturn([])
-                    .map { followers -> Mutation in
-                        let stories: [Story] = [Story(type: .everyTip, user: nil)] + followers.map { Story(type: .user, user: $0) }
-                        return .setStory(stories)
-                    }
+                .asObservable()
+                .catchAndReturn([])
+                .map { followers -> Mutation in
+                    // 🔒 차단 유저 제외
+                    let visibleFollowers = followers.filteredByBlockedUsers()
+                    let stories: [Story] = [Story(type: .everyTip, user: nil)]
+                        + visibleFollowers.map { Story(type: .user, user: $0) }
+                    return .setStory(stories)
+                }
 
-                let tipsObservable = tipUseCase.fetchTotalTips()
-                    .asObservable()
-                    .catchAndReturn([])
-                    .flatMap { tips -> Observable<Mutation> in
-                        return Observable.concat([
-                            .just(.setAllTips(tips)),
-                            .just(.setVisibleTips(tips)),
-                            .just(.setSelectedStory(Story(type: .everyTip, user: nil)))
-                        ])
-                    }
+            let tipsObservable = tipUseCase.fetchTotalTips()
+                .asObservable()
+                .catchAndReturn([])
+                .flatMap { tips -> Observable<Mutation> in
+                    // 🔒 차단 유저 글 제외
+                    let visibleTips = tips.filteredByBlockedUsers()
+                    return Observable.concat([
+                        .just(.setAllTips(visibleTips)),
+                        .just(.setVisibleTips(visibleTips)),
+                        .just(.setSelectedStory(Story(type: .everyTip, user: nil)))
+                    ])
+                }
 
-                return Observable.merge(followersObservable, tipsObservable)
+            return Observable.merge(followersObservable, tipsObservable)
 
         case .storyCellTapped(let story):
             let userID = story.user?.id ?? 0
@@ -150,5 +155,25 @@ struct Story {
     enum StoryType {
         case user
         case everyTip
+    }
+}
+
+//임시 차단 로직
+
+private extension Array where Element == Tip {
+    func filteredByBlockedUsers() -> [Tip] {
+        let blocked: Set<Int> = BlockManager.blockedUserIds
+        return self.filter { tip in
+            !blocked.contains(tip.writer.id)
+        }
+    }
+}
+
+private extension Array where Element == UserPreview {
+    func filteredByBlockedUsers() -> [UserPreview] {
+        let blocked: Set<Int> = BlockManager.blockedUserIds
+        return self.filter { user in
+            !blocked.contains(user.id)
+        }
     }
 }
