@@ -36,7 +36,7 @@ final class DefaultCheckAgreementCoordinator: CheckAgreementCoordinator {
     
     func start() {
         guard let authUseCsae = Container.shared.resolve(AuthUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지않습니다.")
+            fatalError("의존성 주입이 올바르지않습니다.")
         }
         let reactor = CheckAgreementsReactor(
             authUseCase: authUseCsae,

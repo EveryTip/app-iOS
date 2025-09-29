@@ -41,7 +41,7 @@ final class DefaultUserProfileCoordinator: UserProfileCoordinator {
         guard let userUseCase = container.resolve(UserUseCase.self),
               let tipUseCaes = container.resolve(TipUseCase.self)
         else {
-            fatalError("의존성 주입이 옳바르지 않습니다!")
+            fatalError("의존성 주입이 올바르지 않습니다!")
         }
         
         let userProfileReactor = UserProfileReactor(

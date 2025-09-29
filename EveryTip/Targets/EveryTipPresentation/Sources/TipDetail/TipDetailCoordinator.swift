@@ -39,7 +39,7 @@ final class DefaultTipDetailCoordinator: TipDetailCoordinator {
         guard let tipUseCase = Container.shared.resolve(TipUseCase.self),
               let commentUseCase = Container.shared.resolve(CommentUseCase.self)
         else {
-            fatalError("의존성 주입이 옳바르지 않습니다!")
+            fatalError("의존성 주입이 올바르지 않습니다!")
         }
         let reactor = TipDetailReactor(
             tipID: tipId,

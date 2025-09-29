@@ -30,7 +30,7 @@ final class NicknameReactor: Reactor {
             case .empty:
                 return "닉네임을 입력해주세요."
             case .invalidFormat:
-                return "닉네임 형식이 옳바르지 않습니다."
+                return "닉네임 형식이 올바르지 않습니다."
             case .duplicated:
                 return "이미 사용 중인 닉네임입니다."
             }

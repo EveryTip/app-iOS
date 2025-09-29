@@ -39,7 +39,7 @@ final class DefaultMyInfoViewCoordinator: MyInfoViewCoordinator {
     
     func start() -> UIViewController {
         guard let useCase = container.resolve(UserUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지않습니다! \(self)")
+            fatalError("의존성 주입이 올바르지않습니다! \(self)")
         }
         let reactor = MyInfoReactor(userUseCase: useCase)
         

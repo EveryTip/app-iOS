@@ -36,7 +36,7 @@ final class DefaultUserContentsCoordinator: UserContentsCoordinator {
     func start() {
         guard let tipUseCase = Container.shared.resolve(TipUseCase.self),
               let userUseCase = Container.shared.resolve(UserUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지 않습니다!")
+            fatalError("의존성 주입이 올바르지 않습니다!")
         }
         
         //follower

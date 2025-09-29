@@ -30,7 +30,7 @@ final class DefaultSetCategoryCoordinator: SetCategoryCoordinator {
     
     func start() {
         guard let userUseCase = Container.shared.resolve(UserUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지 않습니다!")
+            fatalError("의존성 주입이 올바르지 않습니다!")
         }
         let reactor = SetCategoryReactor(userUseCase: userUseCase)
         let viewController = SetCategoryViewController(reactor: reactor)

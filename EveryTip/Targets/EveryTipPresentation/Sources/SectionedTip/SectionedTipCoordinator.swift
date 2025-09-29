@@ -40,7 +40,7 @@ final class DefaultSectionedTipCoordinator: SectionedTipCoordinator {
     
     func start() {
         guard let tipUseCase = Container.shared.resolve(TipUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지않습니다")
+            fatalError("의존성 주입이 올바르지않습니다")
         }
         
         let reactor = SectionedTipReactor(

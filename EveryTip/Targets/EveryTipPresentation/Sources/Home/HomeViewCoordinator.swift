@@ -44,7 +44,7 @@ final class DefaultHomeViewCoordinator: HomeViewCoordinator {
     func start() -> UIViewController {
         guard let tipUseCase = container.resolve(TipUseCase.self),
               let userUSeCase = container.resolve(UserUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지 않습니다!")
+            fatalError("의존성 주입이 올바르지 않습니다!")
         }
         let reactor = HomeReactor(tipUseCase: tipUseCase, userUseCase: userUSeCase)
         let homeViewController = HomeViewController(reactor: reactor)
