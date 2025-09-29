@@ -31,7 +31,7 @@ final class DefaultForgotPasswordCoordinator: ForgotPasswordCoordinator {
     }
     
     func start() {
-        guard let authUseCase = Container.shared.resolve(AuthUseCase.self) else { fatalError("의존성 주입이 옳바르지 않습니다!")
+        guard let authUseCase = Container.shared.resolve(AuthUseCase.self) else { fatalError("의존성 주입이 올바르지 않습니다!")
         }
         let reactor = ForgotPasswordReactor(authUseCase: authUseCase)
         let forgotPasswordVC = ForgotPasswordViewController(reactor: reactor)

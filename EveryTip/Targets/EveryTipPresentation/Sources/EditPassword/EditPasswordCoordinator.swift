@@ -30,7 +30,7 @@ final class DefaultEditPasswordCoordinator: EditPasswordCoordinator {
     
     func start() {
         guard let authUseCase = Container.shared.resolve(AuthUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지 않습니다")
+            fatalError("의존성 주입이 올바르지 않습니다")
         }
         let reactor = EditPasswordReactor(authUseCase: authUseCase)
         let editPasswordVC = EditPasswordViewController(reactor: reactor)

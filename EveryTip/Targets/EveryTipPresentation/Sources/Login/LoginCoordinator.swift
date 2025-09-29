@@ -33,7 +33,7 @@ final class DefaultLoginCoordinator: LoginCoordinator {
     
     func start() {
         guard let useCase = container.resolve(AuthUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지 않습니다!")
+            fatalError("의존성 주입이 올바르지 않습니다!")
         }
         let reactor = LoginReactor(authUseCase: useCase)
         let loginViewController = LoginViewController(reactor: reactor)
@@ -47,7 +47,7 @@ final class DefaultLoginCoordinator: LoginCoordinator {
     
     func startAndReturnViewController() -> UIViewController {
         guard let useCase = container.resolve(AuthUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지 않습니다!")
+            fatalError("의존성 주입이 올바르지 않습니다!")
         }
         let reactor = LoginReactor(authUseCase: useCase)
         let loginViewController = LoginViewController(reactor: reactor)

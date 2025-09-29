@@ -47,7 +47,7 @@ enum NetworkError: LocalizedError {
         case .emptyResponseData:
             return "데이터가 없습니다"
         case .wrongPassword:
-            return "비밀번호가 옳바르지 않습니다."
+            return "비밀번호가 올바르지 않습니다."
         }
     }
 }

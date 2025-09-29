@@ -37,7 +37,7 @@ final class DefaultEditProfileCoordinator: EditProfileCoordinator {
     private let myNickName: String
     
     func start() {
-        guard let authUseCase = Container.shared.resolve(AuthUseCase.self) else { fatalError("의존성 주입이 옳바르지 않습니다!")
+        guard let authUseCase = Container.shared.resolve(AuthUseCase.self) else { fatalError("의존성 주입이 올바르지 않습니다!")
         }
         
         let reactor = EditProfileReactor(authUseCase: authUseCase, nickName: myNickName)

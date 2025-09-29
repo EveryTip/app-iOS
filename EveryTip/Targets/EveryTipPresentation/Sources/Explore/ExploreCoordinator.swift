@@ -35,7 +35,7 @@ final class DefaultExploreCoordinator: ExploreCoordinator {
     func start() -> UIViewController {
         guard let tipUseCase = Container.shared.resolve(TipUseCase.self),
               let UserUseCase = Container.shared.resolve(UserUseCase.self) else {
-            fatalError("의존성 주입이 옳바르지 않습니다!")
+            fatalError("의존성 주입이 올바르지 않습니다!")
         }
         let reactor = ExploreReactor(tipUseCase: tipUseCase, userUseCase: UserUseCase)
         let exploreViewController = ExploreViewController(reactor: reactor)

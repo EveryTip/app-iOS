@@ -58,8 +58,6 @@ final class LoginReactor: Reactor {
             
             if !email.checkRegex(type: .email) {
                 return .just(.setToast("이메일 형식을 다시 확인해주세요."))
-            } else if !password.checkRegex(type: .password) {
-                return .just(.setToast("패스워드 형식을 다시 확인해주세요."))
             }
             
             return authUseCase.login(
@@ -90,7 +88,7 @@ final class LoginReactor: Reactor {
                 }
             }.catch { error in
                 if error.localizedDescription.contains("409") {
-                    return .just(.setToast("로그인 정보가 옳바르지않습니다."))
+                    return .just(.setToast("로그인 정보가 올바르지않습니다."))
                 } else {
                     return .just(.setToast("잠시 후 다시 시도해주세요"))
                 }
