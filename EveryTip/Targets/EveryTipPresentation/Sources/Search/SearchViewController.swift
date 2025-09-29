@@ -17,48 +17,41 @@ final class SearchViewController: BaseViewController {
     var disposeBag = DisposeBag()
     weak var coordinator: SearchCoordinator?
     
-    private let naviBarView: UIView = {
-        let view = UIView()
-        
-        return view
-    }()
-    
-    private let backButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(.et_getImage(for: .backButton), for: .normal)
-        button.tintColor = .black
-        
-        return button
-    }()
-    
+    // MARK: - Navigation (titleView)
     private let searchBarTextFieldView: UIView = {
         let view = UIView()
         view.backgroundColor = .et_lineGray20
         view.layer.cornerRadius = 20
         view.clipsToBounds = true
-        
         return view
     }()
     
     private let searchBarTextField: UITextField = {
-        let tf = UITextField()
-        tf.backgroundColor = .et_lineGray20
-        tf.placeholder = "어떤 팁이 궁금하세요?"
-        tf.font = .et_pretendard(style: .medium, size: 16)
-        tf.textColor = .et_textColorBlack70
-        tf.clearButtonMode = .whileEditing
-        
-        return tf
+        let textField = UITextField()
+        textField.backgroundColor = .clear
+        textField.placeholder = "어떤 팁이 궁금하세요?"
+        textField.font = .et_pretendard(style: .medium, size: 16)
+        textField.textColor = .et_textColorBlack70
+        textField.clearButtonMode = .whileEditing
+        textField.returnKeyType = .search
+        return textField
     }()
     
     private let searchButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(.et_getImage(for: .searchIcon), for: .normal)
+        
+        let templatedImage = UIImage.et_getImage(for: .searchIcon).withRenderingMode(.alwaysTemplate)
+        
+        var config = UIButton.Configuration.plain()
+        config.image = templatedImage
+        config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 15, bottom: 0, trailing: 20)
+        button.configuration = config
         button.tintColor = .et_brandColor2
         
         return button
     }()
     
+    // MARK: - Content
     private let middleView: UIView = {
         let view = UIView()
         return view
@@ -69,48 +62,40 @@ final class SearchViewController: BaseViewController {
         label.text = "최근 검색어"
         label.font = .et_pretendard(style: .bold, size: 16)
         label.textColor = .et_textColorBlack90
-        
         return label
     }()
     
     private let removeAllButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("전체 삭제", for: .normal)
-        button.titleLabel?.font = .et_pretendard(
-            style: .medium,
-            size: 16
-        )
+        button.titleLabel?.font = .et_pretendard(style: .medium, size: 16)
         button.tintColor = .et_textColorBlack10
-        
         return button
     }()
     
     private let searchHistoryTableView: UITableView = {
         let tableView = UITableView()
-        
         return tableView
     }()
     
     private let sortButton: SortButton = {
         let button = SortButton(type: .system)
         button.configureButtonStyle(with: .latest)
-        
         return button
     }()
     
     private let tipsTableView: UITableView = {
         let tableView = UITableView()
-        
         return tableView
     }()
     
     private let placeholderView: UserContentPlaceholderView = {
         let view = UserContentPlaceholderView(type: .emptySearchResult)
         view.isHidden = true
-        
         return view
     }()
     
+    // MARK: - Init
     init(reactor: SearchReactor) {
         super.init(nibName: nil, bundle: nil)
         self.reactor = reactor
@@ -120,32 +105,23 @@ final class SearchViewController: BaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        self.navigationController?.isNavigationBarHidden = false
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.isNavigationBarHidden = true
-    }
-    
+    // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
         setupConstraints()
         setupTableView()
-        self.navigationController?.isNavigationBarHidden = true
+        configureNavigationItemForSearch()
     }
     
+    // MARK: - Layout
     private func setupLayout() {
+        // titleView는 navigationItem에 올리므로 view 계층에는 추가하지 않음
         view.addSubViews(
-            naviBarView,
             middleView,
             searchHistoryTableView,
             tipsTableView,
             placeholderView
-        )
-        searchBarTextFieldView.addSubview(
-            searchBarTextField
         )
         
         middleView.addSubViews(
@@ -153,48 +129,11 @@ final class SearchViewController: BaseViewController {
             removeAllButton,
             sortButton
         )
-        
-        naviBarView.addSubViews(
-            backButton,
-            searchBarTextFieldView,
-            searchButton
-        )
     }
     
     private func setupConstraints() {
-        naviBarView.snp.makeConstraints {
-            $0.height.equalTo(60)
-            $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-        }
-        
-        backButton.snp.makeConstraints {
-            $0.leading.equalTo(naviBarView.snp.leading).offset(20)
-            $0.height.equalTo(16)
-            $0.width.equalTo(8)
-            $0.centerY.equalTo(naviBarView)
-        }
-        
-        searchBarTextFieldView.snp.makeConstraints {
-            $0.width.equalTo(264)
-            $0.height.equalTo(40)
-            $0.leading.equalTo(backButton.snp.trailing).offset(12)
-            $0.centerY.equalTo(naviBarView)
-        }
-        
-        searchBarTextField.snp.makeConstraints {
-            $0.leading.equalTo(searchBarTextFieldView.snp.leading).offset(20)
-            $0.centerY.equalToSuperview()
-            $0.trailing.equalToSuperview().offset(-20)
-        }
-        
-        searchButton.snp.makeConstraints {
-            $0.trailing.equalTo(naviBarView.snp.trailing).offset(-25)
-            $0.centerY.equalTo(naviBarView)
-            $0.height.width.equalTo(18)
-        }
-        
         middleView.snp.makeConstraints {
-            $0.top.equalTo(naviBarView.snp.bottom).offset(20)
+            $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(20)
             $0.leading.trailing.equalTo(view)
             $0.height.equalTo(20)
         }
@@ -207,8 +146,8 @@ final class SearchViewController: BaseViewController {
         removeAllButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.trailing.equalTo(middleView.snp.trailing).offset(-20)
-            
         }
+        
         sortButton.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.trailing.equalTo(middleView.snp.trailing).offset(-20)
@@ -242,62 +181,93 @@ final class SearchViewController: BaseViewController {
             forCellReuseIdentifier: TipListCell.reuseIdentifier
         )
     }
+    
+    // MARK: - NavigationItem (Search 전용)
+    private func configureNavigationItemForSearch() {
+        navigationItem.titleView = searchBarTextFieldView
+        searchBarTextFieldView.addSubview(searchBarTextField)
+        searchBarTextField.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(
+                UIEdgeInsets(
+                    top: 10,
+                    left: 12,
+                    bottom: 10,
+                    right: 12
+                )
+            )
+        }
+        searchBarTextFieldView.snp.makeConstraints {
+            $0.width.greaterThanOrEqualTo(270)
+            $0.height.equalTo(40)
+        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: searchButton)
+    }
 }
 
+// MARK: - ReactorKit
 extension SearchViewController: View {
     func bind(reactor: SearchReactor) {
         bindInput(reactor: reactor)
         bindOutput(reactor: reactor)
     }
+    
     func bindInput(reactor: SearchReactor) {
+        // 검색어 변경
         searchBarTextField.rx.text.orEmpty
             .distinctUntilChanged()
             .map { Reactor.Action.keywordInputChanged($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        // 오른쪽 바 버튼(검색) 탭
         searchButton.rx.tap
             .map { Reactor.Action.searchButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        // 키보드 리턴 (검색)
+        searchBarTextField.rx.controlEvent(.editingDidEndOnExit)
+            .map { Reactor.Action.searchButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // 진입 시 최근 키워드 로드
         Observable.just(())
             .map { Reactor.Action.loadRecentKeywords }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        // 전체 삭제
         removeAllButton.rx.tap
             .map { Reactor.Action.removeAllButtonTapped }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        backButton.rx.tap
-            .map { Reactor.Action.backButtonTapped }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
+        // 팁 선택
         tipsTableView.rx.itemSelected
-            .map{Reactor.Action.tipSelected($0)}
+            .map { Reactor.Action.tipSelected($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        // 정렬 버튼 (액션 시트)
         sortButton.rx.tap
-            .subscribe { [weak self] _ in
+            .subscribe(onNext: { [weak self] in
                 self?.presentSortAlert { selectedOption in
                     self?.reactor?.action.onNext(.sortButtonTapped(selectedOption))
                 }
-            }
+            })
             .disposed(by: disposeBag)
     }
     
     func bindOutput(reactor: SearchReactor) {
+        // 최근 검색어 목록
         reactor.state
             .map(\.recentKeywords)
             .distinctUntilChanged()
             .bind(to: searchHistoryTableView.rx.items(
                 cellIdentifier: SearchHistoryCell.reuseIdentifier,
                 cellType: SearchHistoryCell.self
-            )) { index, keyword, cell in
+            )) { _, keyword, cell in
                 cell.configureCell(with: keyword)
                 cell.removeButtonTapped
                     .subscribe(onNext: { [weak self] in
@@ -307,6 +277,7 @@ extension SearchViewController: View {
             }
             .disposed(by: disposeBag)
         
+        // 최근 검색어 탭 → 검색어 반영
         searchHistoryTableView.rx.modelSelected(String.self)
             .subscribe(onNext: { [weak self] keyword in
                 self?.searchBarTextField.text = keyword
@@ -314,18 +285,19 @@ extension SearchViewController: View {
             })
             .disposed(by: disposeBag)
         
+        // 토스트
         reactor.pulse(\.$toastMessage)
             .compactMap { $0 }
-            .subscribe(onNext: { [weak self] msg in
-                self?.showToast(message: msg)
+            .subscribe(onNext: { [weak self] message in
+                self?.showToast(message: message)
             })
             .disposed(by: disposeBag)
         
+        // 검색 전후 상태에 따른 영역 토글
         reactor.state
             .map(\.isSearched)
             .distinctUntilChanged()
             .subscribe(onNext: { [weak self] isSearched in
-                
                 self?.recentSearchLable.isHidden = isSearched
                 self?.removeAllButton.isHidden = isSearched
                 self?.searchHistoryTableView.isHidden = isSearched
@@ -335,16 +307,18 @@ extension SearchViewController: View {
             })
             .disposed(by: disposeBag)
         
+        // 팁 목록
         reactor.state
             .map(\.tips)
             .bind(to: tipsTableView.rx.items(
                 cellIdentifier: TipListCell.reuseIdentifier,
                 cellType: TipListCell.self
-            )) { index, tip, cell in
+            )) { _, tip, cell in
                 cell.configureTipListCell(with: tip)
             }
             .disposed(by: disposeBag)
         
+        // 빈 결과 플레이스홀더 처리
         Observable
             .combineLatest(
                 reactor.state.map(\.isSearched).distinctUntilChanged(),
@@ -359,7 +333,7 @@ extension SearchViewController: View {
             })
             .disposed(by: disposeBag)
         
-        
+        // 닫기
         reactor.pulse(\.$dismissSignal)
             .filter { $0 == true }
             .subscribe(onNext: { [weak self] _ in
@@ -367,23 +341,22 @@ extension SearchViewController: View {
             })
             .disposed(by: disposeBag)
         
+        // 상세 푸시
         reactor.pulse(\.$pushSignal)
             .filter { $0 }
             .withUnretained(self)
-            .bind { vc, _ in
-                guard let tip = vc.reactor?.currentState.selectedTip else {
-                    return
-                }
-                vc.coordinator?.pushToTipDetailView(with: tip.id)
-               
-            }.disposed(by: disposeBag)
+            .bind { viewController, _ in
+                guard let tip = viewController.reactor?.currentState.selectedTip else { return }
+                viewController.coordinator?.pushToTipDetailView(with: tip.id)
+            }
+            .disposed(by: disposeBag)
         
+        // 정렬 버튼 스타일 갱신
         reactor.state
-            .map { $0.sortOption }
+            .map(\.sortOption)
             .distinctUntilChanged()
             .bind { [weak self] sortOption in
-                guard let self = self else { return }
-                self.sortButton.configureButtonStyle(with: sortOption)
+                self?.sortButton.configureButtonStyle(with: sortOption)
             }
             .disposed(by: disposeBag)
     }
