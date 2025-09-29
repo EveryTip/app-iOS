@@ -46,6 +46,7 @@ final class SearchViewController: BaseViewController {
         tf.placeholder = "어떤 팁이 궁금하세요?"
         tf.font = .et_pretendard(style: .medium, size: 16)
         tf.textColor = .et_textColorBlack70
+        tf.clearButtonMode = .whileEditing
         
         return tf
     }()
