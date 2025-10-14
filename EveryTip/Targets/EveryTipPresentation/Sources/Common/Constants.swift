@@ -9,16 +9,6 @@
 import UIKit
 
 public struct Constants {
-    public struct MyInfo {
-        public static let tableViewItems: [String] = [
-            "구독 설정",
-            "관심사 설정",
-            "이용약관",
-            "버전",
-            "로그아웃"
-        ]
-    }
-    
     public enum Category: CaseIterable {
         case hobby
         case it
