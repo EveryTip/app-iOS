@@ -9,6 +9,7 @@
 import UIKit
 
 import EveryTipDesignSystem
+import EveryTipCore
 
 import SnapKit
 import ReactorKit
@@ -906,28 +907,32 @@ extension TipDetailViewController: View {
             .disposed(by: disposeBag)
     }
 }
-
 extension TipDetailViewController: UITextViewDelegate {
-    func textViewDidChange(_ textView: UITextView) {
-        commentPlaceholderLable.isHidden = !textView.text.isEmpty
-        
-        let maxHeight: CGFloat = 100
-        let size = textView.sizeThatFits(
-            CGSize(
-                width: textView.frame.width,
-                height: .greatestFiniteMagnitude
+    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        let isLoggedIn = TokenKeyChainManager.shared.isLoggedIn
+            if isLoggedIn {
+                return true
+            } else {
+                coordinator?.checkLoginBeforeAction(onLoggedIn: { [weak self] in
+                    self?.commentInputTextView.becomeFirstResponder()
+                })
+                return false
+            }
+        }
+
+        func textViewDidChange(_ textView: UITextView) {
+            commentPlaceholderLable.isHidden = !textView.text.isEmpty
+
+            let maxHeight: CGFloat = 100
+            let size = textView.sizeThatFits(
+                CGSize(width: textView.frame.width, height: .greatestFiniteMagnitude)
             )
-        )
-        let newHeight = min(size.height, maxHeight)
-        
-        commentInputTextView.isScrollEnabled = size.height > maxHeight
-        
-        commentInputTextView.snp.updateConstraints { make in
-            make.height.equalTo(newHeight)
+            let newHeight = min(size.height, maxHeight)
+
+            commentInputTextView.isScrollEnabled = size.height > maxHeight
+            commentInputTextView.snp.updateConstraints { make in
+                make.height.equalTo(newHeight)
+            }
+            UIView.animate(withDuration: 0.2) { self.view.layoutIfNeeded() }
         }
-        
-        UIView.animate(withDuration: 0.2) {
-            self.view.layoutIfNeeded()
-        }
-    }
 }
