@@ -167,6 +167,29 @@ public final class InteractivePoppableNavigationController: UINavigationControll
         
     }
     
+    private func setupSearchNavigationBar() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        appearance.shadowColor = .clear
+        
+        appearance.titleTextAttributes = [
+            .foregroundColor: UIColor.black,
+            .font: UIFont.et_pretendard(style: .semiBold, size: 20)
+        ]
+        
+        appearance.setBackIndicatorImage(
+            backButtonImage,
+            transitionMaskImage: backButtonImage
+        )
+        appearance.backButtonAppearance = backButtonAppearance
+        
+        navigationBar.isTranslucent = false
+        navigationBar.tintColor = .black
+        navigationBar.standardAppearance = appearance
+        navigationBar.compactAppearance = appearance
+        navigationBar.scrollEdgeAppearance = appearance
+    }
 }
 
 extension InteractivePoppableNavigationController: UIGestureRecognizerDelegate {
@@ -195,7 +218,10 @@ extension InteractivePoppableNavigationController: UINavigationControllerDelegat
             setupRootNavigationBar()
         } else if viewController is EditProfileViewController {
             setupEditProfileNavigationBar()
-        } else {
+        } else if viewController is SearchViewController {
+            setupSearchNavigationBar()
+        }
+        else {
             setupNavigationBar()
         }
     }
