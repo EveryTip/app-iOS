@@ -120,7 +120,7 @@ func makeEveryTipAppTarget(
     dependencies: [TargetDependency]
 ) -> Target {
     let infoPlist: [String: Plist.Value] = [
-        "CFBundleShortVersionString": "1.0.1",
+        "CFBundleShortVersionString": "1.0.2",
         "CFBundleVersion": "1",
         "CFBundleDisplayName": "${APP_DISPLAY_NAME}",
         "UILaunchStoryboardName": "LaunchScreen",
